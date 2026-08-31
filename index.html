@@ -3,67 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pizzaria Forno e Massa - Cardápio Online</title>
+  <title>Pizzaria Forno e Massa | Cardápio Online</title>
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --primary: #e63946;
-      --secondary: #1d3557;
-      --bg: #f8f9fa;
-      --card-bg: #ffffff;
-      --text: #2b2d42;
-      --accent: #2a9d8f;
+      --primary: #c8102e;
+      --primary-hover: #a00c24;
+      --secondary: #18181b;
+      --accent: #f59e0b;
+      --bg: #f4f4f5;
+      --surface: #ffffff;
+      --text: #18181b;
+      --text-muted: #71717a;
+      --border: #e4e4e7;
+      --radius: 12px;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       background-color: var(--bg);
       color: var(--text);
-      padding-bottom: 100px;
+      padding-bottom: 90px;
     }
 
+    /* HEADER */
     header {
-      background-color: var(--primary);
+      background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
       color: white;
+      padding: 2rem 1rem 1.5rem;
       text-align: center;
-      padding: 1.5rem 1rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .brand-icon {
+      font-size: 2rem;
     }
 
     header h1 {
       font-size: 1.6rem;
-      margin-bottom: 0.3rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
-    header p {
-      font-size: 0.9rem;
-      opacity: 0.9;
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 8px;
     }
 
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    /* CONTAINER & CATEGORIES */
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 1rem;
     }
 
-    /* Montador de Pizza Meio a Meio */
-    .builder-card {
-      background: #fff3bf;
-      border: 2px dashed #f59f00;
-      border-radius: 10px;
-      padding: 1.2rem;
-      margin-bottom: 1.5rem;
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 8px 0 16px;
+      scrollbar-width: none;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
     }
 
-    .builder-card h2 {
-      font-size: 1.2rem;
-      color: #d9480f;
-      margin-bottom: 0.8rem;
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(200, 16, 46, 0.25);
+    }
+
+    /* BUILDER / MEIO A MEIO */
+    .builder-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      border: 2px solid #fde68a;
+      background: linear-gradient(to bottom, #fffdf5, #ffffff);
+      box-shadow: var(--shadow);
+    }
+
+    .builder-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .builder-header h2 {
+      font-size: 1.15rem;
+      color: #b45309;
     }
 
     .form-group {
@@ -72,84 +158,133 @@
 
     .form-group label {
       display: block;
-      font-weight: bold;
-      font-size: 0.9rem;
-      margin-bottom: 0.3rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--secondary);
     }
 
     .form-control {
       width: 100%;
-      padding: 0.6rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 0.95rem;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
       background: white;
+      color: var(--text);
+      outline: none;
     }
 
-    .category-title {
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    /* MENU GRID & PRODUCTS */
+    .section-title {
       font-size: 1.2rem;
+      font-weight: 800;
+      margin: 1.5rem 0 1rem;
       color: var(--secondary);
-      margin: 1.5rem 0 1rem 0;
-      border-bottom: 2px solid var(--primary);
-      padding-bottom: 0.3rem;
     }
 
-    .menu-grid {
+    .products-grid {
       display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1rem;
     }
 
     .product-card {
-      background: var(--card-bg);
-      border-radius: 8px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background-color: #e4e4e7;
+    }
+
+    .product-details {
       padding: 1rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-tag {
+      align-self: flex-start;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .product-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .product-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+      margin-bottom: 12px;
+      flex-grow: 1;
+    }
+
+    .product-bottom {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .product-info h3 {
-      font-size: 1rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .product-info p {
-      font-size: 0.85rem;
-      color: #6c757d;
-      margin-bottom: 0.5rem;
+      margin-top: auto;
     }
 
     .product-price {
-      font-weight: bold;
+      font-size: 1.1rem;
+      font-weight: 800;
       color: var(--primary);
-      font-size: 1rem;
     }
 
-    .add-btn {
-      background-color: var(--accent);
+    .btn-add {
+      background: var(--primary);
       color: white;
       border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      font-weight: bold;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
       cursor: pointer;
-      white-space: nowrap;
+      transition: background 0.2s;
     }
 
-    .add-btn-large {
+    .btn-add:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-block {
       width: 100%;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.8rem;
-      border-radius: 6px;
-      font-weight: bold;
+      padding: 12px;
       font-size: 1rem;
-      cursor: pointer;
     }
 
-    /* Barra fixa do Carrinho */
+    /* BARRA FLUTUANTE DO CARRINHO */
     .cart-bar {
       position: fixed;
       bottom: 0;
@@ -157,213 +292,755 @@
       right: 0;
       background: var(--secondary);
       color: white;
-      padding: 1rem;
+      padding: 12px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 -4px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+      z-index: 100;
     }
 
-    .cart-btn {
-      background-color: #25d366;
+    .cart-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-count {
+      font-size: 0.8rem;
+      color: #a1a1aa;
+    }
+
+    .cart-total {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .btn-cart-open {
+      background: var(--primary);
       color: white;
       border: none;
-      padding: 0.75rem 1.2rem;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* MODAIS (CARRINHO E CHECKOUT) */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    @media (min-width: 640px) {
+      .modal-overlay {
+        align-items: center;
+      }
+    }
+
+    .modal-card {
+      background: var(--surface);
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      border-radius: 20px 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @media (min-width: 640px) {
+      .modal-card {
+        border-radius: var(--radius);
+      }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    /* LISTA DO CARRINHO */
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+      padding-right: 10px;
+    }
+
+    .cart-item-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .cart-item-price {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .cart-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-qty {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      width: 28px;
+      height: 28px;
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 0.95rem;
+    }
+
+    .btn-remove {
+      background: none;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      margin-left: 8px;
+      font-size: 1rem;
+    }
+
+    .cart-summary {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px dashed var(--border);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+
+    .summary-row.total {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--secondary);
+      margin-top: 8px;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      background: #fafafa;
+    }
+
+    .empty-cart-msg {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-muted);
+    }
+
+    .radio-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .radio-card {
+      border: 1px solid var(--border);
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .radio-card input {
+      display: none;
+    }
+
+    .radio-card.active {
+      border-color: var(--primary);
+      background: rgba(200, 16, 46, 0.05);
+      color: var(--primary);
     }
   </style>
 </head>
 <body>
 
+  <!-- HEADER -->
   <header>
-    <h1>🍕 Pizzaria Forno e Massa</h1>
-    <p>Monte sua pizza personalizada ou escolha do cardápio</p>
+    <div class="brand">
+      <span class="brand-icon">🍕</span>
+      <h1>Pizzaria Forno e Massa</h1>
+    </div>
+    <p style="font-size: 0.85rem; opacity: 0.8;">Massa artesanal assada no forno a lenha</p>
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span>Aberto para Pedidos</span>
+    </div>
   </header>
 
   <div class="container">
-    
-    <!-- Seção para Monte sua Pizza (1 ou 2 Sabores + Borda) -->
-    <div class="builder-card">
-      <h2>🛠️ Monte sua Pizza (Meio a Meio & Borda)</h2>
-      
-      <div class="form-group">
-        <label for="flavor1">1º Sabor (ou Pizza Inteira):</label>
-        <select id="flavor1" class="form-control" onchange="calculateCustomPrice()">
-          <option value="Calabresa" data-price="42">Calabresa - R$ 42,00</option>
-          <option value="Muçarela" data-price="40">Muçarela - R$ 40,00</option>
-          <option value="Frango com Catupiry" data-price="45">Frango com Catupiry - R$ 45,00</option>
-          <option value="Portuguesa" data-price="46">Portuguesa - R$ 46,00</option>
-          <option value="Quatro Queijos" data-price="48">Quatro Queijos - R$ 48,00</option>
-        </select>
+
+    <!-- TAB CATEGORIAS -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="filterCategory('all', this)">🍕 Cardápio</button>
+      <button class="tab-btn" onclick="filterCategory('meio-a-meio', this)">🛠️ Monte a Sua</button>
+      <button class="tab-btn" onclick="filterCategory('tradicional', this)">Pizzas Tradicionais</button>
+      <button class="tab-btn" onclick="filterCategory('especial', this)">Pizzas Especiais</button>
+      <button class="tab-btn" onclick="filterCategory('doce', this)">Pizzas Doces</button>
+      <button class="tab-btn" onclick="filterCategory('bebida', this)">Bebidas</button>
+      <button class="tab-btn" onclick="filterCategory('entrada', this)">Entradas e Bordas</button>
+    </div>
+
+    <!-- MONTADOR DE PIZZA MEIO A MEIO -->
+    <div class="builder-card" id="cat-meio-a-meio">
+      <div class="builder-header">
+        <span style="font-size: 1.5rem;">🛠️</span>
+        <div>
+          <h2>Monte sua Pizza (Meio a Meio)</h2>
+          <p style="font-size: 0.8rem; color: #78350f;">Escolha até 2 sabores e a borda recheada</p>
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="flavor2">2º Sabor (Opcional - Meio a Meio):</label>
-        <select id="flavor2" class="form-control" onchange="calculateCustomPrice()">
-          <option value="none" data-price="0">Nenhum (Pizza inteira do 1º sabor)</option>
-          <option value="Calabresa" data-price="42">Calabresa - R$ 42,00</option>
-          <option value="Muçarela" data-price="40">Muçarela - R$ 40,00</option>
-          <option value="Frango com Catupiry" data-price="45">Frango com Catupiry - R$ 45,00</option>
-          <option value="Portuguesa" data-price="46">Portuguesa - R$ 46,00</option>
-          <option value="Quatro Queijos" data-price="48">Quatro Queijos - R$ 48,00</option>
-        </select>
+        <label>1º Sabor (ou Pizza Inteira):</label>
+        <select id="flavor1" class="form-control" onchange="updateBuilderPrice()"></select>
       </div>
 
       <div class="form-group">
-        <label for="crust">Escolha a Borda Recheada:</label>
-        <select id="crust" class="form-control" onchange="calculateCustomPrice()">
-          <option value="Sem Borda" data-price="0">Sem Borda Recheada (Grátis)</option>
-          <option value="Borda de Catupiry" data-price="8">Borda de Catupiry (+ R$ 8,00)</option>
-          <option value="Borda de Cheddar" data-price="8">Borda de Cheddar (+ R$ 8,00)</option>
-          <option value="Borda de Chocolate / Nutella" data-price="10">Borda de Nutella (+ R$ 10,00)</option>
-        </select>
+        <label>2º Sabor (Opcional - Meio a Meio):</label>
+        <select id="flavor2" class="form-control" onchange="updateBuilderPrice()"></select>
       </div>
 
-      <button class="add-btn-large" onclick="addCustomPizza()">
-        Adicionar Pizza Personalizada (<span id="custom-price-display">R$ 42,00</span>)
+      <div class="form-group">
+        <label>Borda Recheada:</label>
+        <select id="crust" class="form-control" onchange="updateBuilderPrice()"></select>
+      </div>
+
+      <button class="btn-add btn-block" onclick="addCustomPizzaToCart()">
+        Adicionar Pizza Personalizada (<span id="custom-price-tag">R$ 0,00</span>)
       </button>
     </div>
 
-    <!-- Pizzas Rápida Escolha -->
-    <h2 class="category-title">Pizzas Tradicionais</h2>
-    <div class="menu-grid">
-      <div class="product-card">
-        <div class="product-info">
-          <h3>Calabresa</h3>
-          <p>Molho de tomate, muçarela, calabresa fatiada e cebola.</p>
-          <div class="product-price">R$ 42,00</div>
-        </div>
-        <button class="add-btn" onclick="addToCart('Pizza Calabresa (Inteira, Sem borda)', 42.00)">Adicionar</button>
-      </div>
-
-      <div class="product-card">
-        <div class="product-info">
-          <h3>Muçarela</h3>
-          <p>Molho de tomate, muçarela especial, tomate e orégano.</p>
-          <div class="product-price">R$ 40,00</div>
-        </div>
-        <button class="add-btn" onclick="addToCart('Pizza Muçarela (Inteira, Sem borda)', 40.00)">Adicionar</button>
-      </div>
-
-      <div class="product-card">
-        <div class="product-info">
-          <h3>Frango com Catupiry</h3>
-          <p>Molho de tomate, frango desfiado e Catupiry original.</p>
-          <div class="product-price">R$ 45,00</div>
-        </div>
-        <button class="add-btn" onclick="addToCart('Pizza Frango c/ Catupiry (Inteira, Sem borda)', 45.00)">Adicionar</button>
-      </div>
-    </div>
-
-    <!-- Bebidas -->
-    <h2 class="category-title">Bebidas</h2>
-    <div class="menu-grid">
-      <div class="product-card">
-        <div class="product-info">
-          <h3>Coca-Cola 2L</h3>
-          <p>Refrigerante pet 2 litros gelado.</p>
-          <div class="product-price">R$ 14,00</div>
-        </div>
-        <button class="add-btn" onclick="addToCart('Coca-Cola 2L', 14.00)">Adicionar</button>
-      </div>
-      <div class="product-card">
-        <div class="product-info">
-          <h3>Guaraná Antarctica 2L</h3>
-          <p>Refrigerante pet 2 litros gelado.</p>
-          <div class="product-price">R$ 12,00</div>
-        </div>
-        <button class="add-btn" onclick="addToCart('Guaraná 2L', 12.00)">Adicionar</button>
-      </div>
-    </div>
+    <!-- PRODUTOS DO CARDÁPIO -->
+    <div id="menu-sections"></div>
 
   </div>
 
+  <!-- BARRA INFERIOR DE CÓDIGO/CARRINHO -->
   <div class="cart-bar">
-    <div>
-      <span id="cart-count">0 itens</span><br>
-      <strong id="cart-total">Total: R$ 0,00</strong>
+    <div class="cart-info">
+      <span class="cart-count" id="cart-count-label">0 itens na sacola</span>
+      <span class="cart-total" id="cart-total-label">Subtotal: R$ 0,00</span>
     </div>
-    <button class="cart-btn" onclick="sendOrder()">Finalizar no WhatsApp</button>
+    <button class="btn-cart-open" onclick="openCartModal()">
+      <span>Ver Sacola</span> 🛒
+    </button>
   </div>
 
+  <!-- MODAL DO CARRINHO -->
+  <div class="modal-overlay" id="cart-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🛒 Sua Sacola</h3>
+        <button class="btn-close" onclick="closeCartModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="cart-items-container">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+      <div class="modal-footer" id="cart-footer">
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="summary-subtotal">R$ 0,00</span>
+          </div>
+          <div class="summary-row">
+            <span>Taxa de Entrega</span>
+            <span id="summary-delivery">R$ 0,00</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="summary-total">R$ 0,00</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 1rem;">
+          <button class="btn-add" style="background: #e4e4e7; color: #18181b;" onclick="clearCart()">Limpar</button>
+          <button class="btn-add btn-block" onclick="goToCheckout()">Avançar para Entrega ➔</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE CHECKOUT (DADOS DE ENTREGA) -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📍 Dados de Entrega e Pagamento</h3>
+        <button class="btn-close" onclick="closeCheckoutModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="checkout-form" onsubmit="event.preventDefault(); sendOrderToWhatsApp();">
+          
+          <div class="form-group">
+            <label>Seu Nome Completo *</label>
+            <input type="text" id="cust-name" class="form-control" placeholder="Ex: João Silva" required>
+          </div>
+
+          <div class="form-group">
+            <label>Telefone / WhatsApp *</label>
+            <input type="tel" id="cust-phone" class="form-control" placeholder="(22) 99999-9999" required>
+          </div>
+
+          <div class="form-group">
+            <label>Tipo de Pedido</label>
+            <div class="radio-group">
+              <div class="radio-card active" id="opt-delivery" onclick="setOrderType('delivery')">
+                🚚 Entrega (Delivery)
+              </div>
+              <div class="radio-card" id="opt-pickup" onclick="setOrderType('pickup')">
+                🏠 Retirar no Balcão
+              </div>
+            </div>
+          </div>
+
+          <div id="address-fields">
+            <div class="form-group">
+              <label>Rua / Avenida *</label>
+              <input type="text" id="cust-street" class="form-control" placeholder="Nome da rua">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="form-group">
+                <label>Número *</label>
+                <input type="text" id="cust-number" class="form-control" placeholder="123">
+              </div>
+              <div class="form-group">
+                <label>Bairro *</label>
+                <input type="text" id="cust-neighborhood" class="form-control" placeholder="Centro">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Complemento / Ponto de Referência</label>
+              <input type="text" id="cust-complement" class="form-control" placeholder="Apto 101 / Próximo ao mercado">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Forma de Pagamento *</label>
+            <select id="pay-method" class="form-control" onchange="toggleChangeField()" required>
+              <option value="PIX">PIX (Chave enviada no WhatsApp)</option>
+              <option value="Cartão de Crédito">Cartão de Crédito (na entrega)</option>
+              <option value="Cartão de Débito">Cartão de Débito (na entrega)</option>
+              <option value="Dinheiro">Dinheiro</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="change-group" style="display: none;">
+            <label>Precisa de troco para quanto?</label>
+            <input type="text" id="cust-change" class="form-control" placeholder="Ex: Para R$ 100,00">
+          </div>
+
+          <div class="form-group">
+            <label>Observações do Pedido</label>
+            <textarea id="cust-obs" class="form-control" rows="2" placeholder="Ex: Tirar cebola da pizza, caprichar no orégano..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-add btn-block" style="background: #25d366; font-size: 1.05rem;">
+            Enviar Pedido pelo WhatsApp 💬
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- LÓGICA EM JAVASCRIPT -->
   <script>
-    // Altere este número para o número do seu WhatsApp (Com DDD e sem traços)
-    const WHATSAPP_NUMBER = "5522999999999"; 
+    /* ======================================================
+       1. CONFIGURAÇÕES DA PIZZARIA (EDITAR AQUI)
+       ====================================================== */
+    const CONFIG = {
+      WHATSAPP_NUMBER: "5522999999999", // SEU NÚMERO COM DDD (Apenas números)
+      DELIVERY_FEE: 6.00, // Valor padrão da taxa de entrega
+      HALF_PRICE_RULE: "HIGHER" // "HIGHER" = cobra o valor do sabor mais caro | "AVERAGE" = faz a média dos 2 sabores
+    };
+
+    /* ======================================================
+       2. BASE DE DADOS DO CARDÁPIO
+       ====================================================== */
+    const PIZZA_FLAVORS = [
+      { id: "calabresa", name: "Calabresa", price: 42.00, desc: "Molho de tomate, muçarela, calabresa fatiada e cebola fresca.", cat: "tradicional", img: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=500&q=80" },
+      { id: "mucarela", name: "Muçarela", price: 40.00, desc: "Molho de tomate, dupla camada de muçarela, rodelas de tomate e orégano.", cat: "tradicional", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&q=80" },
+      { id: "frango-catupiry", name: "Frango c/ Catupiry", price: 45.00, desc: "Frango desfiado temperado e requeijão Catupiry original.", cat: "tradicional", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80" },
+      { id: "portuguesa", name: "Portuguesa", price: 46.00, desc: "Presunto, ovos, cebola, ervilha, muçarela e azeitonas pretas.", cat: "especial", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80" },
+      { id: "4queijos", name: "Quatro Queijos", price: 48.00, desc: "Muçarela, provolone, parmesão ralado e catupiry cremoso.", cat: "especial", img: "https://images.unsplash.com/photo-1573821663912-569905455b1c?w=500&q=80" },
+      { id: "pepperoni", name: "Pepperoni", price: 49.00, desc: "Muçarela especial coberta com fatias crocantes de pepperoni.", cat: "especial", img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&q=80" },
+      { id: "chocolate-morango", name: "Chocolate c/ Morango", price: 48.00, desc: "Chocolate ao leite nobre derretido com morangos frescos fatiados.", cat: "doce", img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&q=80" },
+      { id: "romeu-julieta", name: "Romeu e Julieta", price: 44.00, desc: "Queijo muçarela Derretido com Goiabada cremosa especial.", cat: "doce", img: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=500&q=80" }
+    ];
+
+    const CRUST_OPTIONS = [
+      { id: "sem-borda", name: "Sem Borda Recheada", price: 0 },
+      { id: "borda-catupiry", name: "Borda de Catupiry", price: 8.00 },
+      { id: "borda-cheddar", name: "Borda de Cheddar", price: 8.00 },
+      { id: "borda-nutella", name: "Borda de Nutella", price: 10.00 }
+    ];
+
+    const OTHER_PRODUCTS = [
+      { id: "coca-2l", name: "Coca-Cola 2L", price: 14.00, desc: "Garrafa Pet 2 Litros bem gelada.", cat: "bebida", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&q=80" },
+      { id: "guarana-2l", name: "Guaraná Antarctica 2L", price: 12.00, desc: "Garrafa Pet 2 Litros bem gelada.", cat: "bebida", img: "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=500&q=80" },
+      { id: "pao-alho", name: "Pão de Alho da Casa (4 un)", price: 18.00, desc: "Pão baguete gratinado com pasta de alho e muçarela.", cat: "entrada", img: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=500&q=80" }
+    ];
+
+    /* ======================================================
+       3. ESTADO DA APLICAÇÃO
+       ====================================================== */
     let cart = [];
+    let currentOrderType = 'delivery';
 
-    function calculateCustomPrice() {
-      const f1 = document.getElementById('flavor1');
-      const f2 = document.getElementById('flavor2');
-      const crust = document.getElementById('crust');
+    // FORMATADOR DE MOEDA
+    const formatMoney = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-      const priceF1 = parseFloat(f1.options[f1.selectedIndex].getAttribute('data-price')) || 0;
-      const priceF2 = parseFloat(f2.options[f2.selectedIndex].getAttribute('data-price')) || 0;
-      const priceCrust = parseFloat(crust.options[crust.selectedIndex].getAttribute('data-price')) || 0;
+    /* ======================================================
+       4. INICIALIZAÇÃO DA PÁGINA
+       ====================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      populateBuilderSelects();
+      renderMenu();
+      updateCartUI();
+    });
 
-      // Cobra pelo maior valor de sabor da pizza + valor adicional da borda
-      let basePrice = priceF2 > 0 ? Math.max(priceF1, priceF2) : priceF1;
-      let totalPrice = basePrice + priceCrust;
+    function populateBuilderSelects() {
+      const f1Select = document.getElementById('flavor1');
+      const f2Select = document.getElementById('flavor2');
+      const crustSelect = document.getElementById('crust');
 
-      document.getElementById('custom-price-display').innerText = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
-      return { totalPrice, flavor1: f1.value, flavor2: f2.value, crust: crust.value };
+      f1Select.innerHTML = PIZZA_FLAVORS.map(f => `<option value="${f.id}">${f.name} - ${formatMoney(f.price)}</option>`).join('');
+      
+      f2Select.innerHTML = `<option value="none">-- Nenhum (Pizza Inteira) --</option>` + 
+        PIZZA_FLAVORS.map(f => `<option value="${f.id}">${f.name} - ${formatMoney(f.price)}</option>`).join('');
+
+      crustSelect.innerHTML = CRUST_OPTIONS.map(c => `<option value="${c.id}">${c.name} (+ ${formatMoney(c.price)})</option>`).join('');
+
+      updateBuilderPrice();
     }
 
-    function addCustomPizza() {
-      const custom = calculateCustomPrice();
-      let name = "";
+    function calculateCustomPizza() {
+      const f1Id = document.getElementById('flavor1').value;
+      const f2Id = document.getElementById('flavor2').value;
+      const crustId = document.getElementById('crust').value;
 
-      if (custom.flavor2 !== "none" && custom.flavor2 !== custom.flavor1) {
-        name = `Pizza 1/2 ${custom.flavor1} + 1/2 ${custom.flavor2}`;
-      } else {
-        name = `Pizza ${custom.flavor1}`;
+      const flavor1 = PIZZA_FLAVORS.find(f => f.id === f1Id);
+      const flavor2 = PIZZA_FLAVORS.find(f => f.id === f2Id);
+      const crust = CRUST_OPTIONS.find(c => c.id === crustId);
+
+      let basePrice = flavor1.price;
+      let name = `Pizza ${flavor1.name}`;
+
+      if (flavor2 && flavor2.id !== flavor1.id) {
+        name = `Pizza 1/2 ${flavor1.name} + 1/2 ${flavor2.name}`;
+        if (CONFIG.HALF_PRICE_RULE === "HIGHER") {
+          basePrice = Math.max(flavor1.price, flavor2.price);
+        } else {
+          basePrice = (flavor1.price + flavor2.price) / 2;
+        }
       }
 
-      if (custom.crust !== "Sem Borda") {
-        name += ` (${custom.crust})`;
-      } else {
-        name += ` (Sem borda recheada)`;
+      if (crust && crust.price > 0) {
+        name += ` (${crust.name})`;
+        basePrice += crust.price;
       }
 
-      addToCart(name, custom.totalPrice);
+      return { name, price: basePrice };
     }
 
+    function updateBuilderPrice() {
+      const custom = calculateCustomPizza();
+      document.getElementById('custom-price-tag').innerText = formatMoney(custom.price);
+    }
+
+    function addCustomPizzaToCart() {
+      const custom = calculateCustomPizza();
+      addToCart(custom.name, custom.price);
+    }
+
+    /* ======================================================
+       5. RENDERIZAÇÃO DO CARDÁPIO
+       ====================================================== */
+    function renderMenu() {
+      const container = document.getElementById('menu-sections');
+      container.innerHTML = '';
+
+      const categories = [
+        { id: 'tradicional', title: '🍕 Pizzas Tradicionais' },
+        { id: 'especial', title: '🧀 Pizzas Especiais' },
+        { id: 'doce', title: '🍫 Pizzas Doces' },
+        { id: 'bebida', title: '🥤 Bebidas' },
+        { id: 'entrada', title: '🥖 Entradas & Acompanhamentos' }
+      ];
+
+      categories.forEach(cat => {
+        const pizzas = PIZZA_FLAVORS.filter(p => p.cat === cat.id);
+        const others = OTHER_PRODUCTS.filter(p => p.cat === cat.id);
+        const items = [...pizzas, ...others];
+
+        if (items.length === 0) return;
+
+        let html = `
+          <div class="menu-section" id="cat-${cat.id}">
+            <h2 class="section-title">${cat.title}</h2>
+            <div class="products-grid">
+        `;
+
+        items.forEach(prod => {
+          html += `
+            <div class="product-card">
+              <img src="${prod.img}" alt="${prod.name}" class="product-img" loading="lazy">
+              <div class="product-details">
+                <span class="product-tag">${prod.cat}</span>
+                <h3 class="product-title">${prod.name}</h3>
+                <p class="product-desc">${prod.desc}</p>
+                <div class="product-bottom">
+                  <span class="product-price">${formatMoney(prod.price)}</span>
+                  <button class="btn-add" onclick="addToCart('${prod.name}', ${prod.price})">+ Adicionar</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `</div></div>`;
+        container.innerHTML += html;
+      });
+    }
+
+    /* ======================================================
+       6. LÓGICA DO CARRINHO
+       ====================================================== */
     function addToCart(name, price) {
-      cart.push({ name, price });
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      updateCartUI();
+    }
+
+    function updateQty(index, delta) {
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+      }
+      updateCartUI();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    function clearCart() {
+      cart = [];
       updateCartUI();
     }
 
     function updateCartUI() {
-      const count = cart.length;
-      const total = cart.reduce((acc, item) => acc + item.price, 0);
+      const totalCount = cart.reduce((acc, i) => acc + i.qty, 0);
+      const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
+      const grandTotal = subtotal + deliveryFee;
 
-      document.getElementById('cart-count').innerText = `${count} ${count === 1 ? 'item' : 'itens'}`;
-      document.getElementById('cart-total').innerText = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+      // Barra Inferior
+      document.getElementById('cart-count-label').innerText = `${totalCount} ${totalCount === 1 ? 'item' : 'itens'} na sacola`;
+      document.getElementById('cart-total-label').innerText = `Total: ${formatMoney(grandTotal)}`;
+
+      // Modal do Carrinho
+      const container = document.getElementById('cart-items-container');
+      const footer = document.getElementById('cart-footer');
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="empty-cart-msg">
+            <span style="font-size: 2.5rem;">🛒</span>
+            <p style="margin-top: 8px;">Sua sacola está vazia.</p>
+          </div>
+        `;
+        footer.style.display = 'none';
+      } else {
+        footer.style.display = 'block';
+        container.innerHTML = cart.map((item, idx) => `
+          <div class="cart-item">
+            <div class="cart-item-details">
+              <div class="cart-item-title">${item.name}</div>
+              <div class="cart-item-price">${formatMoney(item.price * item.qty)}</div>
+            </div>
+            <div class="cart-controls">
+              <button class="btn-qty" onclick="updateQty(${idx}, -1)">-</button>
+              <span style="font-weight: 700; font-size: 0.9rem;">${item.qty}</span>
+              <button class="btn-qty" onclick="updateQty(${idx}, 1)">+</button>
+              <button class="btn-remove" onclick="removeFromCart(${idx})">🗑️</button>
+            </div>
+          </div>
+        `).join('');
+
+        document.getElementById('summary-subtotal').innerText = formatMoney(subtotal);
+        document.getElementById('summary-delivery').innerText = currentOrderType === 'delivery' ? formatMoney(deliveryFee) : 'Grátis';
+        document.getElementById('summary-total').innerText = formatMoney(grandTotal);
+      }
     }
 
-    function sendOrder() {
-      if (cart.length === 0) {
-        alert("Seu carrinho está vazio! Adicione algum item antes de finalizar.");
-        return;
+    /* ======================================================
+       7. NAVEGAÇÃO E MODAIS
+       ====================================================== */
+    function filterCategory(catId, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (catId === 'all') {
+        document.querySelectorAll('.menu-section, .builder-card').forEach(s => s.style.display = 'block');
+      } else {
+        document.querySelectorAll('.menu-section, .builder-card').forEach(s => s.style.display = 'none');
+        const target = document.getElementById(`cat-${catId}`);
+        if (target) target.style.display = 'block';
+      }
+    }
+
+    function openCartModal() {
+      document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCartModal() {
+      document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    function goToCheckout() {
+      if (cart.length === 0) return;
+      closeCartModal();
+      document.getElementById('checkout-modal').style.display = 'flex';
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkout-modal').style.display = 'none';
+    }
+
+    function setOrderType(type) {
+      currentOrderType = type;
+      document.getElementById('opt-delivery').classList.toggle('active', type === 'delivery');
+      document.getElementById('opt-pickup').classList.toggle('active', type === 'pickup');
+      document.getElementById('address-fields').style.display = type === 'delivery' ? 'block' : 'none';
+      
+      // Atualiza campos required
+      document.getElementById('cust-street').required = (type === 'delivery');
+      document.getElementById('cust-number').required = (type === 'delivery');
+      document.getElementById('cust-neighborhood').required = (type === 'delivery');
+
+      updateCartUI();
+    }
+
+    function toggleChangeField() {
+      const method = document.getElementById('pay-method').value;
+      document.getElementById('change-group').style.display = (method === 'Dinheiro') ? 'block' : 'none';
+    }
+
+    /* ======================================================
+       8. ENVIO DO PEDIDO PARA O WHATSAPP
+       ====================================================== */
+    function sendOrderToWhatsApp() {
+      const name = document.getElementById('cust-name').value;
+      const phone = document.getElementById('cust-phone').value;
+      const payMethod = document.getElementById('pay-method').value;
+      const change = document.getElementById('cust-change').value;
+      const obs = document.getElementById('cust-obs').value;
+
+      let addressText = "";
+      if (currentOrderType === 'delivery') {
+        const street = document.getElementById('cust-street').value;
+        const num = document.getElementById('cust-number').value;
+        const neighborhood = document.getElementById('cust-neighborhood').value;
+        const comp = document.getElementById('cust-complement').value;
+        
+        addressText = `📍 *Endereço de Entrega:*\n${street}, Nº ${num} - ${neighborhood}${comp ? ` (${comp})` : ''}\n\n`;
+      } else {
+        addressText = `🏠 *Tipo:* Retirada no Balcão\n\n`;
       }
 
-      let message = "*Novo Pedido - Pizzaria Forno e Massa*\n\n";
-      let total = 0;
+      const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
+      const total = subtotal + deliveryFee;
 
-      cart.forEach((item) => {
-        message += `• ${item.name} - R$ ${item.price.toFixed(2).replace('.', ',')}\n`;
-        total += item.price;
+      let msg = `🍕 *NOVO PEDIDO - PIZZARIA FORNO E MASSA*\n`;
+      msg += `------------------------------------\n`;
+      msg += `👤 *Cliente:* ${name}\n`;
+      msg += `📱 *Telefone:* ${phone}\n\n`;
+      msg += addressText;
+      msg += `🛒 *ITENS DO PEDIDO:*\n`;
+
+      cart.forEach(item => {
+        msg += `• ${item.qty}x ${item.name} (${formatMoney(item.price * item.qty)})\n`;
       });
 
-      message += `\n*Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
+      msg += `\n------------------------------------\n`;
+      msg += `Subtotal: ${formatMoney(subtotal)}\n`;
+      if (currentOrderType === 'delivery') {
+        msg += `Taxa de Entrega: ${formatMoney(deliveryFee)}\n`;
+      }
+      msg += `*TOTAL DO PEDIDO: ${formatMoney(total)}*\n`;
+      msg += `------------------------------------\n\n`;
 
-      const encodedMessage = encodeURIComponent(message);
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+      msg += `💳 *Forma de Pagamento:* ${payMethod}\n`;
+      if (payMethod === 'Dinheiro' && change) {
+        msg += `💵 *Troco para:* ${change}\n`;
+      }
+
+      if (obs) {
+        msg += `📝 *Observações:* ${obs}\n`;
+      }
+
+      const encodedMsg = encodeURIComponent(msg);
+      window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodedMsg}`, '_blank');
     }
-
-    calculateCustomPrice();
   </script>
 </body>
 </html>
