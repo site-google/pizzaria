@@ -24,24 +24,24 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      padding-bottom: 90px;
+      padding-bottom: 100px;
     }
 
     header {
       background-color: var(--primary);
       color: white;
       text-align: center;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     header h1 {
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
     }
 
     header p {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       opacity: 0.9;
     }
 
@@ -51,8 +51,43 @@
       padding: 1rem;
     }
 
+    /* Montador de Pizza Meio a Meio */
+    .builder-card {
+      background: #fff3bf;
+      border: 2px dashed #f59f00;
+      border-radius: 10px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .builder-card h2 {
+      font-size: 1.2rem;
+      color: #d9480f;
+      margin-bottom: 0.8rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      background: white;
+    }
+
     .category-title {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       color: var(--secondary);
       margin: 1.5rem 0 1rem 0;
       border-bottom: 2px solid var(--primary);
@@ -75,7 +110,7 @@
     }
 
     .product-info h3 {
-      font-size: 1.05rem;
+      font-size: 1rem;
       margin-bottom: 0.25rem;
     }
 
@@ -88,7 +123,7 @@
     .product-price {
       font-weight: bold;
       color: var(--primary);
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
 
     .add-btn {
@@ -99,14 +134,22 @@
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.2s;
+      white-space: nowrap;
     }
 
-    .add-btn:active {
-      transform: scale(0.98);
+    .add-btn-large {
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
     }
 
-    /* Cart Fixed Bar */
+    /* Barra fixa do Carrinho */
     .cart-bar {
       position: fixed;
       bottom: 0;
@@ -129,7 +172,7 @@
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
   </style>
 </head>
@@ -137,10 +180,54 @@
 
   <header>
     <h1>🍕 Pizzaria Forno e Massa</h1>
-    <p>Faça seu pedido online rápido e fácil!</p>
+    <p>Monte sua pizza personalizada ou escolha do cardápio</p>
   </header>
 
   <div class="container">
+    
+    <!-- Seção para Monte sua Pizza (1 ou 2 Sabores + Borda) -->
+    <div class="builder-card">
+      <h2>🛠️ Monte sua Pizza (Meio a Meio & Borda)</h2>
+      
+      <div class="form-group">
+        <label for="flavor1">1º Sabor (ou Pizza Inteira):</label>
+        <select id="flavor1" class="form-control" onchange="calculateCustomPrice()">
+          <option value="Calabresa" data-price="42">Calabresa - R$ 42,00</option>
+          <option value="Muçarela" data-price="40">Muçarela - R$ 40,00</option>
+          <option value="Frango com Catupiry" data-price="45">Frango com Catupiry - R$ 45,00</option>
+          <option value="Portuguesa" data-price="46">Portuguesa - R$ 46,00</option>
+          <option value="Quatro Queijos" data-price="48">Quatro Queijos - R$ 48,00</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="flavor2">2º Sabor (Opcional - Meio a Meio):</label>
+        <select id="flavor2" class="form-control" onchange="calculateCustomPrice()">
+          <option value="none" data-price="0">Nenhum (Pizza inteira do 1º sabor)</option>
+          <option value="Calabresa" data-price="42">Calabresa - R$ 42,00</option>
+          <option value="Muçarela" data-price="40">Muçarela - R$ 40,00</option>
+          <option value="Frango com Catupiry" data-price="45">Frango com Catupiry - R$ 45,00</option>
+          <option value="Portuguesa" data-price="46">Portuguesa - R$ 46,00</option>
+          <option value="Quatro Queijos" data-price="48">Quatro Queijos - R$ 48,00</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="crust">Escolha a Borda Recheada:</label>
+        <select id="crust" class="form-control" onchange="calculateCustomPrice()">
+          <option value="Sem Borda" data-price="0">Sem Borda Recheada (Grátis)</option>
+          <option value="Borda de Catupiry" data-price="8">Borda de Catupiry (+ R$ 8,00)</option>
+          <option value="Borda de Cheddar" data-price="8">Borda de Cheddar (+ R$ 8,00)</option>
+          <option value="Borda de Chocolate / Nutella" data-price="10">Borda de Nutella (+ R$ 10,00)</option>
+        </select>
+      </div>
+
+      <button class="add-btn-large" onclick="addCustomPizza()">
+        Adicionar Pizza Personalizada (<span id="custom-price-display">R$ 42,00</span>)
+      </button>
+    </div>
+
+    <!-- Pizzas Rápida Escolha -->
     <h2 class="category-title">Pizzas Tradicionais</h2>
     <div class="menu-grid">
       <div class="product-card">
@@ -149,7 +236,7 @@
           <p>Molho de tomate, muçarela, calabresa fatiada e cebola.</p>
           <div class="product-price">R$ 42,00</div>
         </div>
-        <button class="add-btn" onclick="addToCart('Pizza Calabresa', 42.00)">Adicionar</button>
+        <button class="add-btn" onclick="addToCart('Pizza Calabresa (Inteira, Sem borda)', 42.00)">Adicionar</button>
       </div>
 
       <div class="product-card">
@@ -158,7 +245,7 @@
           <p>Molho de tomate, muçarela especial, tomate e orégano.</p>
           <div class="product-price">R$ 40,00</div>
         </div>
-        <button class="add-btn" onclick="addToCart('Pizza Muçarela', 40.00)">Adicionar</button>
+        <button class="add-btn" onclick="addToCart('Pizza Muçarela (Inteira, Sem borda)', 40.00)">Adicionar</button>
       </div>
 
       <div class="product-card">
@@ -167,22 +254,11 @@
           <p>Molho de tomate, frango desfiado e Catupiry original.</p>
           <div class="product-price">R$ 45,00</div>
         </div>
-        <button class="add-btn" onclick="addToCart('Pizza Frango c/ Catupiry', 45.00)">Adicionar</button>
+        <button class="add-btn" onclick="addToCart('Pizza Frango c/ Catupiry (Inteira, Sem borda)', 45.00)">Adicionar</button>
       </div>
     </div>
 
-    <h2 class="category-title">Pizzas Doces</h2>
-    <div class="menu-grid">
-      <div class="product-card">
-        <div class="product-info">
-          <h3>Chocolate com Morango</h3>
-          <p>Chocolate ao leite derretido e morangos frescos fatiados.</p>
-          <div class="product-price">R$ 48,00</div>
-        </div>
-        <button class="add-btn" onclick="addToCart('Pizza Choco com Morango', 48.00)">Adicionar</button>
-      </div>
-    </div>
-
+    <!-- Bebidas -->
     <h2 class="category-title">Bebidas</h2>
     <div class="menu-grid">
       <div class="product-card">
@@ -193,7 +269,16 @@
         </div>
         <button class="add-btn" onclick="addToCart('Coca-Cola 2L', 14.00)">Adicionar</button>
       </div>
+      <div class="product-card">
+        <div class="product-info">
+          <h3>Guaraná Antarctica 2L</h3>
+          <p>Refrigerante pet 2 litros gelado.</p>
+          <div class="product-price">R$ 12,00</div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Guaraná 2L', 12.00)">Adicionar</button>
+      </div>
     </div>
+
   </div>
 
   <div class="cart-bar">
@@ -205,10 +290,45 @@
   </div>
 
   <script>
-    // Configuração do WhatsApp da Pizzaria (Substitua pelo seu número com DDD)
+    // Altere este número para o número do seu WhatsApp (Com DDD e sem traços)
     const WHATSAPP_NUMBER = "5522999999999"; 
-
     let cart = [];
+
+    function calculateCustomPrice() {
+      const f1 = document.getElementById('flavor1');
+      const f2 = document.getElementById('flavor2');
+      const crust = document.getElementById('crust');
+
+      const priceF1 = parseFloat(f1.options[f1.selectedIndex].getAttribute('data-price')) || 0;
+      const priceF2 = parseFloat(f2.options[f2.selectedIndex].getAttribute('data-price')) || 0;
+      const priceCrust = parseFloat(crust.options[crust.selectedIndex].getAttribute('data-price')) || 0;
+
+      // Cobra pelo maior valor de sabor da pizza + valor adicional da borda
+      let basePrice = priceF2 > 0 ? Math.max(priceF1, priceF2) : priceF1;
+      let totalPrice = basePrice + priceCrust;
+
+      document.getElementById('custom-price-display').innerText = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
+      return { totalPrice, flavor1: f1.value, flavor2: f2.value, crust: crust.value };
+    }
+
+    function addCustomPizza() {
+      const custom = calculateCustomPrice();
+      let name = "";
+
+      if (custom.flavor2 !== "none" && custom.flavor2 !== custom.flavor1) {
+        name = `Pizza 1/2 ${custom.flavor1} + 1/2 ${custom.flavor2}`;
+      } else {
+        name = `Pizza ${custom.flavor1}`;
+      }
+
+      if (custom.crust !== "Sem Borda") {
+        name += ` (${custom.crust})`;
+      } else {
+        name += ` (Sem borda recheada)`;
+      }
+
+      addToCart(name, custom.totalPrice);
+    }
 
     function addToCart(name, price) {
       cart.push({ name, price });
@@ -232,7 +352,7 @@
       let message = "*Novo Pedido - Pizzaria Forno e Massa*\n\n";
       let total = 0;
 
-      cart.forEach((item, index) => {
+      cart.forEach((item) => {
         message += `• ${item.name} - R$ ${item.price.toFixed(2).replace('.', ',')}\n`;
         total += item.price;
       });
@@ -242,6 +362,8 @@
       const encodedMessage = encodeURIComponent(message);
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
     }
+
+    calculateCustomPrice();
   </script>
 </body>
 </html>
