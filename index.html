@@ -1,49 +1,194 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, maximum-scale=1, viewport-fit=cover">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <title>Pizzaria Forno e Massa</title>
-    <meta name="description" content="Faça seu pedido online na Pizzaria Forno e Massa!">
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizzaria Forno e Massa - Cardápio Online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <script type="module" crossorigin src="/assets/index-BTiRBO8n.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/vendor-payments-BkPv9nS1.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-vue-BM_fFN4_.js">
-    <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-C0FnF6B9.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-C8zjyzLQ.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-utils-D9xoPAC5.js">
-    <link rel="modulepreload" crossorigin href="/assets/EventManager-Bs_SQ4Im.js">
-    <link rel="modulepreload" crossorigin href="/assets/BaseIcon-xcxvkVRn.js">
-    <link rel="modulepreload" crossorigin href="/assets/formatCurrency-BHFcCYze.js">
-    <link rel="modulepreload" crossorigin href="/assets/BaseButton-DF5fcqw2.js">
-    <link rel="modulepreload" crossorigin href="/assets/applyMask-Css1ChhL.js">
-    <link rel="modulepreload" crossorigin href="/assets/BaseInput-vBfsrQN5.js">
-    <link rel="modulepreload" crossorigin href="/assets/BaseModal-CF9W7uHI.js">
-    <link rel="modulepreload" crossorigin href="/assets/installments.service-vQvuunby.js">
-    <link rel="modulepreload" crossorigin href="/assets/debounce-CESzNut9.js">
-    <link rel="modulepreload" crossorigin href="/assets/BaseBadge-Di11aj61.js">
-    <link rel="modulepreload" crossorigin href="/assets/ScheduledInfoModal-AKm89lCp.js">
-    <link rel="modulepreload" crossorigin href="/assets/BaseCheckable-CGw8qOrE.js">
+  <style>
+    :root {
+      --primary: #e63946;
+      --primary-dark: #c1121f;
+      --secondary: #2b2d42;
+      --bg-light: #f8f9fa;
+      --text-dark: #1d3557;
+      --white: #ffffff;
+      --border: #e0e0e0;
+    }
 
-    <link rel="stylesheet" crossorigin href="/assets/BaseIcon-BQHn92_w.css">
-    <link rel="stylesheet" crossorigin href="/assets/BaseButton-OCA1FeqP.css">
-    <link rel="stylesheet" crossorigin href="/assets/BaseInput-KSNelJd-.css">
-    <link rel="stylesheet" crossorigin href="/assets/BaseModal-DmMuIw0q.css">
-    <link rel="stylesheet" crossorigin href="/assets/BaseBadge-ChW46nD1.css">
-    <link rel="stylesheet" crossorigin href="/assets/ScheduledInfoModal-C4MSdI5u.css">
-    <link rel="stylesheet" crossorigin href="/assets/BaseCheckable-C2mW_92N.css">
-    <link rel="stylesheet" crossorigin href="/assets/index-B5pRxcIH.css">
-  </head>
-  <body>
-    <noscript>
-      <strong>Pedimos desculpas, mas o nosso cardápio não funciona corretamente sem o JavaScript habilitado. Por favor, ative o JavaScript para continuar.</strong>
-    </noscript>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
 
-    <div id="app"></div>
-  </body>
-</html>
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      padding-bottom: 100px;
+    }
+
+    header {
+      background: var(--secondary);
+      color: var(--white);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .section-title {
+      margin: 1.5rem 0 1rem;
+      font-size: 1.4rem;
+      color: var(--secondary);
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 5px;
+      display: inline-block;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      color: var(--secondary);
+      margin-bottom: 0.3rem;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .price {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary-dark);
+    }
+
+    .btn-add {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-add:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Carrinho Fixo Rodapé */
+    .cart-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      border-top: 2px solid var(--border);
+      padding: 1rem;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 200;
+    }
+
+    .cart-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-count {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .cart-total {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .btn-checkout {
+      background: #25d366;
+      color: var(--white);
+      border: none;
+      padding: 0.75rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+
+    /* Modal do Pedido */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 300;
+      justify-content:
