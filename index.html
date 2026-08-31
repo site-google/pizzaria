@@ -329,7 +329,7 @@
       gap: 8px;
     }
 
-    /* MODAIS (CARRINHO E CHECKOUT) */
+    /* MODAIS (CARRINHO, CHECKOUT E PIX) */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -505,6 +505,22 @@
       background: rgba(200, 16, 46, 0.05);
       color: var(--primary);
     }
+
+    /* ESTILOS ESPECÍFICOS DO PIX */
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 15px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -622,7 +638,7 @@
         <button class="btn-close" onclick="closeCheckoutModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <form id="checkout-form" onsubmit="event.preventDefault(); sendOrderToWhatsApp();">
+        <form id="checkout-form" onsubmit="event.preventDefault(); handleCheckoutSubmit();">
           
           <div class="form-group">
             <label>Seu Nome Completo *</label>
@@ -670,7 +686,7 @@
           <div class="form-group">
             <label>Forma de Pagamento *</label>
             <select id="pay-method" class="form-control" onchange="toggleChangeField()" required>
-              <option value="PIX">PIX (Chave enviada no WhatsApp)</option>
+              <option value="PIX">⚡ PIX (Gerar QR Code Automático)</option>
               <option value="Cartão de Crédito">Cartão de Crédito (na entrega)</option>
               <option value="Cartão de Débito">Cartão de Débito (na entrega)</option>
               <option value="Dinheiro">Dinheiro</option>
@@ -688,9 +704,49 @@
           </div>
 
           <button type="submit" class="btn-add btn-block" style="background: #25d366; font-size: 1.05rem;">
-            Enviar Pedido pelo WhatsApp 💬
+            Finalizar Pedido ➔
           </button>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EXCLUSIVO PARA O GERADOR DE PIX -->
+  <div class="modal-overlay" id="pix-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="color: #16a34a;">⚡ Pagamento Instantâneo via PIX</h3>
+        <button class="btn-close" onclick="closePixModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        
+        <div id="pix-loading">
+          <div class="spinner"></div>
+          <p style="font-weight: 600; font-size: 0.95rem; margin-top: 10px;">Gerando seu QR Code PIX...</p>
+        </div>
+
+        <div id="pix-content" style="display: none;">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
+            Escaneie o QR Code abaixo com o aplicativo do seu banco ou copie o código Pix Copia e Cola.
+          </p>
+
+          <img id="pix-qrcode" src="" alt="QR Code PIX" style="max-width: 220px; width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: white; margin-bottom: 15px;">
+
+          <div style="text-align: left; margin-bottom: 6px;">
+            <label style="font-size: 0.8rem; font-weight: 700;">Código PIX (Copia e Cola):</label>
+          </div>
+          <textarea id="pix-copia-cola" class="form-control" rows="3" readonly style="font-size: 0.8rem; resize: none; margin-bottom: 12px; font-family: monospace;"></textarea>
+
+          <button class="btn-add btn-block" style="background: #2563eb; margin-bottom: 8px;" onclick="copiarPix()">
+            📋 Copiar Código PIX
+          </button>
+
+          <button class="btn-add btn-block" style="background: #25d366;" onclick="sendOrderToWhatsApp()">
+            Enviar Pedido e Comprovante no WhatsApp 💬
+          </button>
+        </div>
+
+        <div id="pix-erro" style="display: none; color: #dc2626; padding: 15px; font-weight: 600; font-size: 0.9rem;"></div>
       </div>
     </div>
   </div>
@@ -965,6 +1021,10 @@
       document.getElementById('checkout-modal').style.display = 'none';
     }
 
+    function closePixModal() {
+      document.getElementById('pix-modal').style.display = 'none';
+    }
+
     function setOrderType(type) {
       currentOrderType = type;
       document.getElementById('opt-delivery').classList.toggle('active', type === 'delivery');
@@ -985,8 +1045,81 @@
     }
 
     /* ======================================================
-       8. ENVIO DO PEDIDO PARA O WHATSAPP
+       8. SUBMISSÃO DO PEDIDO & INTEGRAÇÃO PIX
        ====================================================== */
+    function handleCheckoutSubmit() {
+      const payMethod = document.getElementById('pay-method').value;
+
+      if (payMethod === 'PIX') {
+        closeCheckoutModal();
+        gerarPixEExibirModal();
+      } else {
+        sendOrderToWhatsApp();
+      }
+    }
+
+    async function gerarPixEExibirModal() {
+      const name = document.getElementById('cust-name').value;
+      const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
+      const totalAmount = subtotal + deliveryFee;
+
+      const pixModal = document.getElementById('pix-modal');
+      const pixLoading = document.getElementById('pix-loading');
+      const pixContent = document.getElementById('pix-content');
+      const pixErro = document.getElementById('pix-erro');
+
+      pixModal.style.display = 'flex';
+      pixLoading.style.display = 'block';
+      pixContent.style.display = 'none';
+      pixErro.style.display = 'none';
+
+      const proxyUrl = 'https://shy-shadow-b53e.paypal970690.workers.dev/';
+      const clientId = "ep_3494f9fae8d92e2463294ac2e28e0266";
+      const clientSecret = "eps_9df1cdc2257b5749b385d796347dadfc06f648153c7d26790dc06b3a9cd281d0";
+
+      try {
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-client-id': clientId,
+            'x-client-secret': clientSecret
+          },
+          body: JSON.stringify({
+            amount: totalAmount,
+            description: `Pedido Pizzaria - ${name}`,
+            payerName: name,
+            payerDocument: "12345678900"
+          })
+        });
+
+        const data = await response.json();
+        pixLoading.style.display = 'none';
+
+        if (data.success) {
+          document.getElementById('pix-qrcode').src = data.qrcodeUrl;
+          document.getElementById('pix-copia-cola').value = data.copyPaste;
+          pixContent.style.display = 'block';
+        } else {
+          pixErro.innerText = "Erro ao gerar o PIX: " + (data.message || JSON.stringify(data));
+          pixErro.style.display = 'block';
+        }
+      } catch (err) {
+        pixLoading.style.display = 'none';
+        pixErro.innerText = "Falha ao conectar ao serviço de pagamento PIX: " + err.message;
+        pixErro.style.display = 'block';
+      }
+    }
+
+    function copiarPix() {
+      const inputCopy = document.getElementById('pix-copia-cola');
+      inputCopy.select();
+      inputCopy.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(inputCopy.value);
+      alert("Código PIX copiado para a área de transferência!");
+    }
+
     function sendOrderToWhatsApp() {
       const name = document.getElementById('cust-name').value;
       const phone = document.getElementById('cust-phone').value;
