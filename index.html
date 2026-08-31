@@ -1,387 +1,1046 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pizzaria Delícia - Finalizar Pedido</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #dc2626;
-            --primary-dark: #b91c1c;
-            --success: #16a34a;
-            --bg: #fafafa;
-            --card: #ffffff;
-            --text-main: #18181b;
-            --text-muted: #71717a;
-            --border: #e4e4e7;
-            --highlight: #fef2f2;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizzaria Forno e Massa | Cardápio Online</title>
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #c8102e;
+      --primary-hover: #a00c24;
+      --secondary: #18181b;
+      --accent: #f59e0b;
+      --bg: #f4f4f5;
+      --surface: #ffffff;
+      --text: #18181b;
+      --text-muted: #71717a;
+      --border: #e4e4e7;
+      --radius: 12px;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--border);
-            padding: 15px 0;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 90px;
+    }
 
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+      color: white;
+      padding: 2rem 1rem 1.5rem;
+      text-align: center;
+      position: relative;
+    }
 
-        main {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px 20px;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
 
-        .container {
-            background-color: var(--card);
-            max-width: 550px;
-            width: 100%;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border: 1px solid var(--border);
-        }
+    .brand-icon {
+      font-size: 2rem;
+    }
 
-        h1 {
-            color: var(--text-main);
-            text-align: center;
-            margin-top: 0;
-            font-size: 24px;
-            font-weight: 800;
-        }
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
 
-        .subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
 
-        .resumo-pedido {
-            background: var(--highlight);
-            border: 1px solid #fecaca;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
 
-        .resumo-pedido h3 {
-            margin: 0 0 10px 0;
-            font-size: 16px;
-            color: var(--primary);
-        }
+    /* CONTAINER & CATEGORIES */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
 
-        .resumo-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            margin-bottom: 6px;
-        }
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 8px 0 16px;
+      scrollbar-width: none;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
 
-        .resumo-total {
-            display: flex;
-            justify-content: space-between;
-            font-size: 16px;
-            font-weight: 700;
-            margin-top: 10px;
-            border-top: 1px dashed #fca5a5;
-            padding-top: 8px;
-        }
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+    .tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-size: 14px;
-        }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(200, 16, 46, 0.25);
+    }
 
-        input[type="text"], input[type="tel"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
+    /* BUILDER / MEIO A MEIO */
+    .builder-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      border: 2px solid #fde68a;
+      background: linear-gradient(to bottom, #fffdf5, #ffffff);
+      box-shadow: var(--shadow);
+    }
 
-        input:focus {
-            border-color: var(--primary);
-        }
+    .builder-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
 
-        .btn-main {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--success);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 10px;
-        }
+    .builder-header h2 {
+      font-size: 1.15rem;
+      color: #b45309;
+    }
 
-        .btn-main:hover {
-            background-color: #15803d;
-        }
+    .form-group {
+      margin-bottom: 1rem;
+    }
 
-        .btn-copy {
-            background-color: #2563eb;
-            margin-top: 10px;
-        }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--secondary);
+    }
 
-        .btn-copy:hover {
-            background-color: #1d4ed8;
-        }
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: white;
+      color: var(--text);
+      outline: none;
+    }
 
-        #step-pix {
-            display: none;
-        }
+    .form-control:focus {
+      border-color: var(--primary);
+    }
 
-        .pix-box {
-            text-align: center;
-            padding: 20px;
-            border: 2px solid #bbf7d0;
-            border-radius: 12px;
-            margin-top: 15px;
-            background: #f0fdf4;
-        }
+    /* MENU GRID & PRODUCTS */
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin: 1.5rem 0 1rem;
+      color: var(--secondary);
+    }
 
-        .payment-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-            padding: 12px;
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-radius: 8px;
-            color: #d97706;
-            font-weight: 600;
-            font-size: 14px;
-        }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
 
-        .spinner {
-            width: 18px;
-            height: 18px;
-            border: 3px solid #fde68a;
-            border-top: 3px solid #d97706;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+    .product-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
-        }
+    .product-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 12px;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border);
-            background: white;
-        }
-    </style>
+    .product-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background-color: #e4e4e7;
+    }
+
+    .product-details {
+      padding: 1rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-tag {
+      align-self: flex-start;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .product-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .product-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+      margin-bottom: 12px;
+      flex-grow: 1;
+    }
+
+    .product-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .product-price {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .btn-add {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-add:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-block {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+    }
+
+    /* BARRA FLUTUANTE DO CARRINHO */
+    .cart-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--secondary);
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+
+    .cart-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-count {
+      font-size: 0.8rem;
+      color: #a1a1aa;
+    }
+
+    .cart-total {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .btn-cart-open {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* MODAIS (CARRINHO E CHECKOUT) */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    @media (min-width: 640px) {
+      .modal-overlay {
+        align-items: center;
+      }
+    }
+
+    .modal-card {
+      background: var(--surface);
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      border-radius: 20px 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @media (min-width: 640px) {
+      .modal-card {
+        border-radius: var(--radius);
+      }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    /* LISTA DO CARRINHO */
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+      padding-right: 10px;
+    }
+
+    .cart-item-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .cart-item-price {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .cart-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-qty {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-remove {
+      background: none;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      margin-left: 8px;
+      font-size: 1rem;
+    }
+
+    .cart-summary {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px dashed var(--border);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+
+    .summary-row.total {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--secondary);
+      margin-top: 8px;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      background: #fafafa;
+    }
+
+    .empty-cart-msg {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-muted);
+    }
+
+    .radio-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .radio-card {
+      border: 1px solid var(--border);
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .radio-card input {
+      display: none;
+    }
+
+    .radio-card.active {
+      border-color: var(--primary);
+      background: rgba(200, 16, 46, 0.05);
+      color: var(--primary);
+    }
+  </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">
-        🍕 Pizzaria Delícia
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <span class="brand-icon">🍕</span>
+      <h1>Pizzaria Forno e Massa</h1>
     </div>
-</header>
-
-<main>
-    <div class="container">
-        <!-- ETAPA 1: DADOS DO CLIENTE E PEDIDO -->
-        <div id="step-checkout">
-            <h1>Finalizar Pedido</h1>
-            <p class="subtitle">Confirme seus dados para gerar o pagamento via PIX</p>
-
-            <div class="resumo-pedido">
-                <h3>Resumo do Pedido</h3>
-                <div class="resumo-item"><span>1x Pizza Calabresa Grande</span> <span>R$ 45,00</span></div>
-                <div class="resumo-item"><span>1x Guaraná 2L</span> <span>R$ 10,00</span></div>
-                <div class="resumo-item"><span>Taxa de Entrega</span> <span>R$ 5,00</span></div>
-                <div class="resumo-total">
-                    <span>Total:</span>
-                    <span id="valor-total">R$ 60,00</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="nome">Seu Nome Completo:</label>
-                <input type="text" id="nome" placeholder="Ex: Maria Silva">
-            </div>
-
-            <div class="form-group">
-                <label for="whatsapp">WhatsApp:</label>
-                <input type="tel" id="whatsapp" placeholder="(11) 99999-9999" maxlength="15" oninput="formatarWhatsApp(this)">
-            </div>
-
-            <div class="form-group">
-                <label for="endereco">Endereço de Entrega:</label>
-                <input type="text" id="endereco" placeholder="Rua, número e bairro">
-            </div>
-
-            <button class="btn-main" onclick="gerarPixPedido()">
-                Pagar com PIX
-            </button>
-        </div>
-
-        <!-- ETAPA 2: EXIBIÇÃO DO QR CODE PIX -->
-        <div id="step-pix">
-            <h1 style="color: var(--success);">Pedido Pré-Confirmado!</h1>
-            <p class="subtitle">Realize o pagamento para iniciar o preparo da sua pizza.</p>
-
-            <div class="pix-box">
-                <h3 style="color: var(--success); margin: 0 0 10px 0;">Pagamento Instantâneo via PIX</h3>
-                
-                <div id="pix-loading" class="payment-status">
-                    <div class="spinner"></div>
-                    <span>Gerando QR Code PIX...</span>
-                </div>
-
-                <div id="pix-container" style="display: none; margin-top: 15px;">
-                    <div style="margin-bottom: 15px;">
-                        <img id="pix-qrcode" src="" alt="QR Code PIX" style="max-width: 220px; width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: white;" />
-                    </div>
-                    
-                    <div style="text-align: left; margin-bottom: 5px;">
-                        <label for="pix-copia-cola" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">PIX Copia e Cola:</label>
-                    </div>
-                    <textarea id="pix-copia-cola" rows="3" readonly style="width: 100%; padding: 10px; font-size: 13px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; resize: none; background: #ffffff;"></textarea>
-                    
-                    <button class="btn-main btn-copy" onclick="copiarPix()">
-                        Copiar Código PIX
-                    </button>
-                </div>
-
-                <div id="pix-erro" style="display: none; color: #dc2626; font-size: 14px; margin-top: 15px; font-weight: 600;"></div>
-            </div>
-        </div>
+    <p style="font-size: 0.85rem; opacity: 0.8;">Massa artesanal assada no forno a lenha</p>
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span>Aberto para Pedidos</span>
     </div>
-</main>
+  </header>
 
-<footer>
-    © 2026 Pizzaria Delícia - Todos os direitos reservados.
-</footer>
+  <div class="container">
 
-<script>
-    function formatarWhatsApp(input) {
-        let value = input.value.replace(/\D/g, "");
-        if (value.length > 11) value = value.substring(0, 11);
+    <!-- TAB CATEGORIAS -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="filterCategory('all', this)">🍕 Cardápio</button>
+      <button class="tab-btn" onclick="filterCategory('meio-a-meio', this)">🛠️ Monte a Sua</button>
+      <button class="tab-btn" onclick="filterCategory('tradicional', this)">Pizzas Tradicionais</button>
+      <button class="tab-btn" onclick="filterCategory('especial', this)">Pizzas Especiais</button>
+      <button class="tab-btn" onclick="filterCategory('doce', this)">Pizzas Doces</button>
+      <button class="tab-btn" onclick="filterCategory('bebida', this)">Bebidas</button>
+      <button class="tab-btn" onclick="filterCategory('entrada', this)">Entradas e Bordas</button>
+    </div>
+
+    <!-- MONTADOR DE PIZZA MEIO A MEIO -->
+    <div class="builder-card" id="cat-meio-a-meio">
+      <div class="builder-header">
+        <span style="font-size: 1.5rem;">🛠️</span>
+        <div>
+          <h2>Monte sua Pizza (Meio a Meio)</h2>
+          <p style="font-size: 0.8rem; color: #78350f;">Escolha até 2 sabores e a borda recheada</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>1º Sabor (ou Pizza Inteira):</label>
+        <select id="flavor1" class="form-control" onchange="updateBuilderPrice()"></select>
+      </div>
+
+      <div class="form-group">
+        <label>2º Sabor (Opcional - Meio a Meio):</label>
+        <select id="flavor2" class="form-control" onchange="updateBuilderPrice()"></select>
+      </div>
+
+      <div class="form-group">
+        <label>Borda Recheada:</label>
+        <select id="crust" class="form-control" onchange="updateBuilderPrice()"></select>
+      </div>
+
+      <button class="btn-add btn-block" onclick="addCustomPizzaToCart()">
+        Adicionar Pizza Personalizada (<span id="custom-price-tag">R$ 0,00</span>)
+      </button>
+    </div>
+
+    <!-- PRODUTOS DO CARDÁPIO -->
+    <div id="menu-sections"></div>
+
+  </div>
+
+  <!-- BARRA INFERIOR DE CÓDIGO/CARRINHO -->
+  <div class="cart-bar">
+    <div class="cart-info">
+      <span class="cart-count" id="cart-count-label">0 itens na sacola</span>
+      <span class="cart-total" id="cart-total-label">Subtotal: R$ 0,00</span>
+    </div>
+    <button class="btn-cart-open" onclick="openCartModal()">
+      <span>Ver Sacola</span> 🛒
+    </button>
+  </div>
+
+  <!-- MODAL DO CARRINHO -->
+  <div class="modal-overlay" id="cart-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🛒 Sua Sacola</h3>
+        <button class="btn-close" onclick="closeCartModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="cart-items-container">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+      <div class="modal-footer" id="cart-footer">
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="summary-subtotal">R$ 0,00</span>
+          </div>
+          <div class="summary-row">
+            <span>Taxa de Entrega</span>
+            <span id="summary-delivery">R$ 0,00</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="summary-total">R$ 0,00</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 1rem;">
+          <button class="btn-add" style="background: #e4e4e7; color: #18181b;" onclick="clearCart()">Limpar</button>
+          <button class="btn-add btn-block" onclick="goToCheckout()">Avançar para Entrega ➔</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE CHECKOUT (DADOS DE ENTREGA) -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📍 Dados de Entrega e Pagamento</h3>
+        <button class="btn-close" onclick="closeCheckoutModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="checkout-form" onsubmit="event.preventDefault(); sendOrderToWhatsApp();">
+          
+          <div class="form-group">
+            <label>Seu Nome Completo *</label>
+            <input type="text" id="cust-name" class="form-control" placeholder="Ex: João Silva" required>
+          </div>
+
+          <div class="form-group">
+            <label>Telefone / WhatsApp *</label>
+            <input type="tel" id="cust-phone" class="form-control" placeholder="(22) 99999-9999" required>
+          </div>
+
+          <div class="form-group">
+            <label>Tipo de Pedido</label>
+            <div class="radio-group">
+              <div class="radio-card active" id="opt-delivery" onclick="setOrderType('delivery')">
+                🚚 Entrega (Delivery)
+              </div>
+              <div class="radio-card" id="opt-pickup" onclick="setOrderType('pickup')">
+                🏠 Retirar no Balcão
+              </div>
+            </div>
+          </div>
+
+          <div id="address-fields">
+            <div class="form-group">
+              <label>Rua / Avenida *</label>
+              <input type="text" id="cust-street" class="form-control" placeholder="Nome da rua">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="form-group">
+                <label>Número *</label>
+                <input type="text" id="cust-number" class="form-control" placeholder="123">
+              </div>
+              <div class="form-group">
+                <label>Bairro *</label>
+                <input type="text" id="cust-neighborhood" class="form-control" placeholder="Centro">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Complemento / Ponto de Referência</label>
+              <input type="text" id="cust-complement" class="form-control" placeholder="Apto 101 / Próximo ao mercado">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Forma de Pagamento *</label>
+            <select id="pay-method" class="form-control" onchange="toggleChangeField()" required>
+              <option value="PIX">PIX (Chave enviada no WhatsApp)</option>
+              <option value="Cartão de Crédito">Cartão de Crédito (na entrega)</option>
+              <option value="Cartão de Débito">Cartão de Débito (na entrega)</option>
+              <option value="Dinheiro">Dinheiro</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="change-group" style="display: none;">
+            <label>Precisa de troco para quanto?</label>
+            <input type="text" id="cust-change" class="form-control" placeholder="Ex: Para R$ 100,00">
+          </div>
+
+          <div class="form-group">
+            <label>Observações do Pedido</label>
+            <textarea id="cust-obs" class="form-control" rows="2" placeholder="Ex: Tirar cebola da pizza, caprichar no orégano..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-add btn-block" style="background: #25d366; font-size: 1.05rem;">
+            Enviar Pedido pelo WhatsApp 💬
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- LÓGICA EM JAVASCRIPT -->
+  <script>
+    /* ======================================================
+       1. CONFIGURAÇÕES DA PIZZARIA (EDITAR AQUI)
+       ====================================================== */
+    const CONFIG = {
+      WHATSAPP_NUMBER: "5522999999999", // SEU NÚMERO COM DDD (Apenas números)
+      DELIVERY_FEE: 6.00, // Valor padrão da taxa de entrega
+      HALF_PRICE_RULE: "HIGHER" // "HIGHER" = cobra o valor do sabor mais caro | "AVERAGE" = faz a média dos 2 sabores
+    };
+
+    /* ======================================================
+       2. BASE DE DADOS DO CARDÁPIO
+       ====================================================== */
+    const PIZZA_FLAVORS = [
+      { id: "calabresa", name: "Calabresa", price: 42.00, desc: "Molho de tomate, muçarela, calabresa fatiada e cebola fresca.", cat: "tradicional", img: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=500&q=80" },
+      { id: "mucarela", name: "Muçarela", price: 40.00, desc: "Molho de tomate, dupla camada de muçarela, rodelas de tomate e orégano.", cat: "tradicional", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&q=80" },
+      { id: "frango-catupiry", name: "Frango c/ Catupiry", price: 45.00, desc: "Frango desfiado temperado e requeijão Catupiry original.", cat: "tradicional", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80" },
+      { id: "portuguesa", name: "Portuguesa", price: 46.00, desc: "Presunto, ovos, cebola, ervilha, muçarela e azeitonas pretas.", cat: "especial", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80" },
+      { id: "4queijos", name: "Quatro Queijos", price: 48.00, desc: "Muçarela, provolone, parmesão ralado e catupiry cremoso.", cat: "especial", img: "https://images.unsplash.com/photo-1573821663912-569905455b1c?w=500&q=80" },
+      { id: "pepperoni", name: "Pepperoni", price: 49.00, desc: "Muçarela especial coberta com fatias crocantes de pepperoni.", cat: "especial", img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&q=80" },
+      { id: "chocolate-morango", name: "Chocolate c/ Morango", price: 48.00, desc: "Chocolate ao leite nobre derretido com morangos frescos fatiados.", cat: "doce", img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&q=80" },
+      { id: "romeu-julieta", name: "Romeu e Julieta", price: 44.00, desc: "Queijo muçarela Derretido com Goiabada cremosa especial.", cat: "doce", img: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=500&q=80" }
+    ];
+
+    const CRUST_OPTIONS = [
+      { id: "sem-borda", name: "Sem Borda Recheada", price: 0 },
+      { id: "borda-catupiry", name: "Borda de Catupiry", price: 8.00 },
+      { id: "borda-cheddar", name: "Borda de Cheddar", price: 8.00 },
+      { id: "borda-nutella", name: "Borda de Nutella", price: 10.00 }
+    ];
+
+    const OTHER_PRODUCTS = [
+      { id: "coca-2l", name: "Coca-Cola 2L", price: 14.00, desc: "Garrafa Pet 2 Litros bem gelada.", cat: "bebida", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&q=80" },
+      { id: "guarana-2l", name: "Guaraná Antarctica 2L", price: 12.00, desc: "Garrafa Pet 2 Litros bem gelada.", cat: "bebida", img: "https://images.unsplash.com/photo-1527960471264-932f39eb5846?w=500&q=80" },
+      { id: "pao-alho", name: "Pão de Alho da Casa (4 un)", price: 18.00, desc: "Pão baguete gratinado com pasta de alho e muçarela.", cat: "entrada", img: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500&q=80" }
+    ];
+
+    /* ======================================================
+       3. ESTADO DA APLICAÇÃO
+       ====================================================== */
+    let cart = [];
+    let currentOrderType = 'delivery';
+
+    // FORMATADOR DE MOEDA
+    const formatMoney = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    /* ======================================================
+       4. INICIALIZAÇÃO DA PÁGINA
+       ====================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      populateBuilderSelects();
+      renderMenu();
+      updateCartUI();
+    });
+
+    function populateBuilderSelects() {
+      const f1Select = document.getElementById('flavor1');
+      const f2Select = document.getElementById('flavor2');
+      const crustSelect = document.getElementById('crust');
+
+      f1Select.innerHTML = PIZZA_FLAVORS.map(f => `<option value="${f.id}">${f.name} - ${formatMoney(f.price)}</option>`).join('');
+      
+      f2Select.innerHTML = `<option value="none">-- Nenhum (Pizza Inteira) --</option>` + 
+        PIZZA_FLAVORS.map(f => `<option value="${f.id}">${f.name} - ${formatMoney(f.price)}</option>`).join('');
+
+      crustSelect.innerHTML = CRUST_OPTIONS.map(c => `<option value="${c.id}">${c.name} (+ ${formatMoney(c.price)})</option>`).join('');
+
+      updateBuilderPrice();
+    }
+
+    function calculateCustomPizza() {
+      const f1Id = document.getElementById('flavor1').value;
+      const f2Id = document.getElementById('flavor2').value;
+      const crustId = document.getElementById('crust').value;
+
+      const flavor1 = PIZZA_FLAVORS.find(f => f.id === f1Id);
+      const flavor2 = PIZZA_FLAVORS.find(f => f.id === f2Id);
+      const crust = CRUST_OPTIONS.find(c => c.id === crustId);
+
+      let basePrice = flavor1.price;
+      let name = `Pizza ${flavor1.name}`;
+
+      if (flavor2 && flavor2.id !== flavor1.id) {
+        name = `Pizza 1/2 ${flavor1.name} + 1/2 ${flavor2.name}`;
+        if (CONFIG.HALF_PRICE_RULE === "HIGHER") {
+          basePrice = Math.max(flavor1.price, flavor2.price);
+        } else {
+          basePrice = (flavor1.price + flavor2.price) / 2;
+        }
+      }
+
+      if (crust && crust.price > 0) {
+        name += ` (${crust.name})`;
+        basePrice += crust.price;
+      }
+
+      return { name, price: basePrice };
+    }
+
+    function updateBuilderPrice() {
+      const custom = calculateCustomPizza();
+      document.getElementById('custom-price-tag').innerText = formatMoney(custom.price);
+    }
+
+    function addCustomPizzaToCart() {
+      const custom = calculateCustomPizza();
+      addToCart(custom.name, custom.price);
+    }
+
+    /* ======================================================
+       5. RENDERIZAÇÃO DO CARDÁPIO
+       ====================================================== */
+    function renderMenu() {
+      const container = document.getElementById('menu-sections');
+      container.innerHTML = '';
+
+      const categories = [
+        { id: 'tradicional', title: '🍕 Pizzas Tradicionais' },
+        { id: 'especial', title: '🧀 Pizzas Especiais' },
+        { id: 'doce', title: '🍫 Pizzas Doces' },
+        { id: 'bebida', title: '🥤 Bebidas' },
+        { id: 'entrada', title: '🥖 Entradas & Acompanhamentos' }
+      ];
+
+      categories.forEach(cat => {
+        const pizzas = PIZZA_FLAVORS.filter(p => p.cat === cat.id);
+        const others = OTHER_PRODUCTS.filter(p => p.cat === cat.id);
+        const items = [...pizzas, ...others];
+
+        if (items.length === 0) return;
+
+        let html = `
+          <div class="menu-section" id="cat-${cat.id}">
+            <h2 class="section-title">${cat.title}</h2>
+            <div class="products-grid">
+        `;
+
+        items.forEach(prod => {
+          html += `
+            <div class="product-card">
+              <img src="${prod.img}" alt="${prod.name}" class="product-img" loading="lazy">
+              <div class="product-details">
+                <span class="product-tag">${prod.cat}</span>
+                <h3 class="product-title">${prod.name}</h3>
+                <p class="product-desc">${prod.desc}</p>
+                <div class="product-bottom">
+                  <span class="product-price">${formatMoney(prod.price)}</span>
+                  <button class="btn-add" onclick="addToCart('${prod.name}', ${prod.price})">+ Adicionar</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `</div></div>`;
+        container.innerHTML += html;
+      });
+    }
+
+    /* ======================================================
+       6. LÓGICA DO CARRINHO
+       ====================================================== */
+    function addToCart(name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      updateCartUI();
+    }
+
+    function updateQty(index, delta) {
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+      }
+      updateCartUI();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    function clearCart() {
+      cart = [];
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const totalCount = cart.reduce((acc, i) => acc + i.qty, 0);
+      const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
+      const grandTotal = subtotal + deliveryFee;
+
+      // Barra Inferior
+      document.getElementById('cart-count-label').innerText = `${totalCount} ${totalCount === 1 ? 'item' : 'itens'} na sacola`;
+      document.getElementById('cart-total-label').innerText = `Total: ${formatMoney(grandTotal)}`;
+
+      // Modal do Carrinho
+      const container = document.getElementById('cart-items-container');
+      const footer = document.getElementById('cart-footer');
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="empty-cart-msg">
+            <span style="font-size: 2.5rem;">🛒</span>
+            <p style="margin-top: 8px;">Sua sacola está vazia.</p>
+          </div>
+        `;
+        footer.style.display = 'none';
+      } else {
+        footer.style.display = 'block';
+        container.innerHTML = cart.map((item, idx) => `
+          <div class="cart-item">
+            <div class="cart-item-details">
+              <div class="cart-item-title">${item.name}</div>
+              <div class="cart-item-price">${formatMoney(item.price * item.qty)}</div>
+            </div>
+            <div class="cart-controls">
+              <button class="btn-qty" onclick="updateQty(${idx}, -1)">-</button>
+              <span style="font-weight: 700; font-size: 0.9rem;">${item.qty}</span>
+              <button class="btn-qty" onclick="updateQty(${idx}, 1)">+</button>
+              <button class="btn-remove" onclick="removeFromCart(${idx})">🗑️</button>
+            </div>
+          </div>
+        `).join('');
+
+        document.getElementById('summary-subtotal').innerText = formatMoney(subtotal);
+        document.getElementById('summary-delivery').innerText = currentOrderType === 'delivery' ? formatMoney(deliveryFee) : 'Grátis';
+        document.getElementById('summary-total').innerText = formatMoney(grandTotal);
+      }
+    }
+
+    /* ======================================================
+       7. NAVEGAÇÃO E MODAIS
+       ====================================================== */
+    function filterCategory(catId, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (catId === 'all') {
+        document.querySelectorAll('.menu-section, .builder-card').forEach(s => s.style.display = 'block');
+      } else {
+        document.querySelectorAll('.menu-section, .builder-card').forEach(s => s.style.display = 'none');
+        const target = document.getElementById(`cat-${catId}`);
+        if (target) target.style.display = 'block';
+      }
+    }
+
+    function openCartModal() {
+      document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCartModal() {
+      document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    function goToCheckout() {
+      if (cart.length === 0) return;
+      closeCartModal();
+      document.getElementById('checkout-modal').style.display = 'flex';
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkout-modal').style.display = 'none';
+    }
+
+    function setOrderType(type) {
+      currentOrderType = type;
+      document.getElementById('opt-delivery').classList.toggle('active', type === 'delivery');
+      document.getElementById('opt-pickup').classList.toggle('active', type === 'pickup');
+      document.getElementById('address-fields').style.display = type === 'delivery' ? 'block' : 'none';
+      
+      // Atualiza campos required
+      document.getElementById('cust-street').required = (type === 'delivery');
+      document.getElementById('cust-number').required = (type === 'delivery');
+      document.getElementById('cust-neighborhood').required = (type === 'delivery');
+
+      updateCartUI();
+    }
+
+    function toggleChangeField() {
+      const method = document.getElementById('pay-method').value;
+      document.getElementById('change-group').style.display = (method === 'Dinheiro') ? 'block' : 'none';
+    }
+
+    /* ======================================================
+       8. ENVIO DO PEDIDO PARA O WHATSAPP
+       ====================================================== */
+    function sendOrderToWhatsApp() {
+      const name = document.getElementById('cust-name').value;
+      const phone = document.getElementById('cust-phone').value;
+      const payMethod = document.getElementById('pay-method').value;
+      const change = document.getElementById('cust-change').value;
+      const obs = document.getElementById('cust-obs').value;
+
+      let addressText = "";
+      if (currentOrderType === 'delivery') {
+        const street = document.getElementById('cust-street').value;
+        const num = document.getElementById('cust-number').value;
+        const neighborhood = document.getElementById('cust-neighborhood').value;
+        const comp = document.getElementById('cust-complement').value;
         
-        if (value.length > 6) {
-            value = `(${value.substring(0,2)}) ${value.substring(2,7)}-${value.substring(7)}`;
-        } else if (value.length > 2) {
-            value = `(${value.substring(0,2)}) ${value.substring(2)}`;
-        } else if (value.length > 0) {
-            value = `(${value}`;
-        }
-        input.value = value;
+        addressText = `📍 *Endereço de Entrega:*\n${street}, Nº ${num} - ${neighborhood}${comp ? ` (${comp})` : ''}\n\n`;
+      } else {
+        addressText = `🏠 *Tipo:* Retirada no Balcão\n\n`;
+      }
+
+      const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
+      const total = subtotal + deliveryFee;
+
+      let msg = `🍕 *NOVO PEDIDO - PIZZARIA FORNO E MASSA*\n`;
+      msg += `------------------------------------\n`;
+      msg += `👤 *Cliente:* ${name}\n`;
+      msg += `📱 *Telefone:* ${phone}\n\n`;
+      msg += addressText;
+      msg += `🛒 *ITENS DO PEDIDO:*\n`;
+
+      cart.forEach(item => {
+        msg += `• ${item.qty}x ${item.name} (${formatMoney(item.price * item.qty)})\n`;
+      });
+
+      msg += `\n------------------------------------\n`;
+      msg += `Subtotal: ${formatMoney(subtotal)}\n`;
+      if (currentOrderType === 'delivery') {
+        msg += `Taxa de Entrega: ${formatMoney(deliveryFee)}\n`;
+      }
+      msg += `*TOTAL DO PEDIDO: ${formatMoney(total)}*\n`;
+      msg += `------------------------------------\n\n`;
+
+      msg += `💳 *Forma de Pagamento:* ${payMethod}\n`;
+      if (payMethod === 'Dinheiro' && change) {
+        msg += `💵 *Troco para:* ${change}\n`;
+      }
+
+      if (obs) {
+        msg += `📝 *Observações:* ${obs}\n`;
+      }
+
+      const encodedMsg = encodeURIComponent(msg);
+      window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodedMsg}`, '_blank');
     }
-
-    async function gerarPixPedido() {
-        const nome = document.getElementById('nome').value.trim();
-        const whatsapp = document.getElementById('whatsapp').value.trim();
-        const endereco = document.getElementById('endereco').value.trim();
-
-        if (!nome || whatsapp.length < 14 || !endereco) {
-            alert("Por favor, preencha todos os campos antes de continuar.");
-            return;
-        }
-
-        document.getElementById('step-checkout').style.display = 'none';
-        document.getElementById('step-pix').style.display = 'block';
-
-        const proxyUrl = 'https://shy-shadow-b53e.paypal970690.workers.dev/';
-        const clientId = "ep_3494f9fae8d92e2463294ac2e28e0266";
-        const clientSecret = "eps_9df1cdc2257b5749b385d796347dadfc06f648153c7d26790dc06b3a9cd281d0";
-
-        const loadingDiv = document.getElementById('pix-loading');
-        const containerDiv = document.getElementById('pix-container');
-        const erroDiv = document.getElementById('pix-erro');
-
-        loadingDiv.style.display = 'flex';
-        containerDiv.style.display = 'none';
-        erroDiv.style.display = 'none';
-
-        try {
-            const response = await fetch(proxyUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-client-id': clientId,
-                    'x-client-secret': clientSecret
-                },
-                body: JSON.stringify({
-                    amount: 60.00,
-                    description: `Pedido Pizzaria - ${nome}`,
-                    payerName: nome,
-                    payerDocument: "12345678900"
-                })
-            });
-
-            const data = await response.json();
-            loadingDiv.style.display = 'none';
-
-            if (data.success) {
-                document.getElementById('pix-qrcode').src = data.qrcodeUrl;
-                document.getElementById('pix-copia-cola').value = data.copyPaste;
-                containerDiv.style.display = 'block';
-            } else {
-                erroDiv.innerText = "Erro ao gerar o PIX: " + (data.message || JSON.stringify(data));
-                erroDiv.style.display = 'block';
-            }
-        } catch (err) {
-            loadingDiv.style.display = 'none';
-            erroDiv.innerText = "Falha ao conectar ao servidor de pagamento: " + err.message;
-            erroDiv.style.display = 'block';
-        }
-    }
-
-    function copiarPix() {
-        const inputCopy = document.getElementById('pix-copia-cola');
-        inputCopy.select();
-        inputCopy.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(inputCopy.value);
-        alert("Código PIX copiado com sucesso!");
-    }
-</script>
-
+  </script>
 </body>
 </html>
