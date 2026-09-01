@@ -642,10 +642,22 @@
         <!-- Renderizado dinamicamente via JS -->
       </div>
       <div class="modal-footer" id="cart-footer">
+        
+        <!-- CAMPO DE CUPOM DE DESCONTO -->
+        <div style="margin-bottom: 12px; display: flex; gap: 8px;">
+          <input type="text" id="coupon-input" class="form-control" placeholder="Cupom (ex: METADE)" style="text-transform: uppercase;">
+          <button class="btn-add" style="background: var(--secondary); white-space: nowrap;" onclick="applyCoupon()">Aplicar</button>
+        </div>
+        <div id="coupon-feedback" style="font-size: 0.8rem; margin-bottom: 8px; font-weight: 600;"></div>
+
         <div class="cart-summary">
           <div class="summary-row">
             <span>Subtotal</span>
             <span id="summary-subtotal">R$ 0,00</span>
+          </div>
+          <div class="summary-row" id="discount-row" style="display: none; color: #16a34a;">
+            <span>Desconto (Cupom)</span>
+            <span id="summary-discount">-R$ 0,00</span>
           </div>
           <div class="summary-row">
             <span>Taxa de Entrega</span>
@@ -807,7 +819,7 @@
        1. CONFIGURAÇÕES DA PIZZARIA & API TEXTMEBOT
        ====================================================== */
     const CONFIG = {
-      WHATSAPP_NUMBER: "5522998311388", // SEU NÚMERO ONDE OS PEDIDOS SERÃO RECEBIDOS
+      WHATSAPP_NUMBER: "5522992195418", // NÚMERO ATUALIZADO SOLICITADO
       TEXTMEBOT_API_KEY: "Pskn5LW4qaCv",
       DELIVERY_FEE: 6.00,
       HALF_PRICE_RULE: "HIGHER"
@@ -820,7 +832,6 @@
       const recipient = `+${CONFIG.WHATSAPP_NUMBER}`;
       const apiUrl = `https://api.textmebot.com/send.php?recipient=${encodeURIComponent(recipient)}&apikey=${CONFIG.TEXTMEBOT_API_KEY}&text=${encodeURIComponent(messageText)}`;
 
-      // Utilizando mode: 'no-cors' para garantir o disparo seguro via GET em segundo plano
       fetch(apiUrl, { mode: 'no-cors' })
         .then(() => console.log("[API TEXTMEBOT] Requisição de envio disparada!"))
         .catch(err => console.error("[API TEXTMEBOT] Erro ao enviar:", err));
@@ -858,6 +869,8 @@
        ====================================================== */
     let cart = []; // Inicia vazio (R$ 0,00)
     let currentOrderType = 'delivery';
+    let appliedDiscount = 0; // 0 ou 0.5 (50% de desconto)
+    let activeCouponName = "";
 
     const formatMoney = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -975,7 +988,7 @@
     }
 
     /* ======================================================
-       7. LÓGICA DO CARRINHO
+       7. LÓGICA DO CARRINHO E CUPOM
        ====================================================== */
     function addToCart(name, price) {
       const existing = cart.find(item => item.name === name);
@@ -1003,15 +1016,42 @@
 
     function clearCart() {
       cart = [];
+      appliedDiscount = 0;
+      activeCouponName = "";
+      document.getElementById('coupon-input').value = "";
+      document.getElementById('coupon-feedback').innerText = "";
+      updateCartUI();
+    }
+
+    function applyCoupon() {
+      const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+      const feedback = document.getElementById('coupon-feedback');
+
+      if (code === "METADE") {
+        appliedDiscount = 0.5; // 50% de desconto
+        activeCouponName = "METADE";
+        feedback.style.color = "#16a34a";
+        feedback.innerText = "✨ Cupom aplicado com sucesso! 50% de desconto.";
+        showToast("Cupom METADE aplicado!");
+      } else {
+        appliedDiscount = 0;
+        activeCouponName = "";
+        feedback.style.color = "#dc2626";
+        feedback.innerText = "❌ Cupom inválido.";
+        showToast("Cupom inválido!");
+      }
       updateCartUI();
     }
 
     function updateCartUI() {
       const totalCount = cart.reduce((acc, i) => acc + i.qty, 0);
       const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-      // Se o carrinho estiver vazio, taxa de entrega inicializa como 0 para refletir R$ 0,00 total
+      
+      const discountAmount = subtotal * appliedDiscount;
+      const subtotalWithDiscount = subtotal - discountAmount;
+
       const deliveryFee = (cart.length > 0 && currentOrderType === 'delivery') ? CONFIG.DELIVERY_FEE : 0;
-      const grandTotal = subtotal + (cart.length > 0 && currentOrderType === 'delivery' ? deliveryFee : 0);
+      const grandTotal = subtotalWithDiscount + deliveryFee;
 
       // Barra Inferior
       document.getElementById('cart-count-label').innerText = `${totalCount} ${totalCount === 1 ? 'item' : 'itens'} na sacola`;
@@ -1029,6 +1069,10 @@
           </div>
         `;
         footer.style.display = 'none';
+        appliedDiscount = 0;
+        activeCouponName = "";
+        document.getElementById('coupon-input').value = "";
+        document.getElementById('coupon-feedback').innerText = "";
       } else {
         footer.style.display = 'block';
         container.innerHTML = cart.map((item, idx) => `
@@ -1047,8 +1091,17 @@
         `).join('');
 
         document.getElementById('summary-subtotal').innerText = formatMoney(subtotal);
+        
+        const discountRow = document.getElementById('discount-row');
+        if (appliedDiscount > 0) {
+          discountRow.style.display = 'flex';
+          document.getElementById('summary-discount').innerText = `- ${formatMoney(discountAmount)}`;
+        } else {
+          discountRow.style.display = 'none';
+        }
+
         document.getElementById('summary-delivery').innerText = currentOrderType === 'delivery' ? formatMoney(CONFIG.DELIVERY_FEE) : 'Grátis';
-        document.getElementById('summary-total').innerText = formatMoney(subtotal + (currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0));
+        document.getElementById('summary-total').innerText = formatMoney(grandTotal);
       }
     }
 
@@ -1137,8 +1190,10 @@
       }
 
       const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const discountAmount = subtotal * appliedDiscount;
+      const subtotalWithDiscount = subtotal - discountAmount;
       const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
-      const total = subtotal + deliveryFee;
+      const total = subtotalWithDiscount + deliveryFee;
 
       let msg = `🍕 NOVO PEDIDO - PIZZARIA FORNO E MASSA\n`;
       msg += `------------------------------------\n`;
@@ -1153,6 +1208,9 @@
 
       msg += `\n------------------------------------\n`;
       msg += `Subtotal: ${formatMoney(subtotal)}\n`;
+      if (appliedDiscount > 0) {
+        msg += `Cupom Aplicado: ${activeCouponName} (-${formatMoney(discountAmount)})\n`;
+      }
       if (currentOrderType === 'delivery') {
         msg += `Taxa de Entrega: ${formatMoney(deliveryFee)}\n`;
       }
@@ -1187,7 +1245,6 @@
         closeCheckoutModal();
         gerarPixEExibirModal();
       } else {
-        // Envia o pedido via API TextMeBot
         const msg = buildOrderMessage();
         sendWhatsAppApiNotification(msg);
         
@@ -1201,8 +1258,10 @@
     async function gerarPixEExibirModal() {
       const name = document.getElementById('cust-name').value;
       const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const discountAmount = subtotal * appliedDiscount;
+      const subtotalWithDiscount = subtotal - discountAmount;
       const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
-      const totalAmount = subtotal + deliveryFee;
+      const totalAmount = subtotalWithDiscount + deliveryFee;
 
       const pixModal = document.getElementById('pix-modal');
       const pixLoading = document.getElementById('pix-loading');
@@ -1242,7 +1301,6 @@
           document.getElementById('pix-copia-cola').value = data.copyPaste;
           pixContent.style.display = 'block';
 
-          // Dispara notificação de PIX Gerado para a API TextMeBot
           const msg = buildOrderMessage();
           sendWhatsAppApiNotification(msg);
         } else {
