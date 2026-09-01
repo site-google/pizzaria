@@ -645,7 +645,7 @@
         
         <!-- CAMPO DE CUPOM DE DESCONTO -->
         <div style="margin-bottom: 12px; display: flex; gap: 8px;">
-          <input type="text" id="coupon-input" class="form-control" placeholder="Cupom (ex: METADE)" style="text-transform: uppercase;">
+          <input type="text" id="coupon-input" class="form-control" placeholder="Digite seu cupom" style="text-transform: uppercase;">
           <button class="btn-add" style="background: var(--secondary); white-space: nowrap;" onclick="applyCoupon()">Aplicar</button>
         </div>
         <div id="coupon-feedback" style="font-size: 0.8rem; margin-bottom: 8px; font-weight: 600;"></div>
@@ -819,7 +819,7 @@
        1. CONFIGURAÇÕES DA PIZZARIA & API TEXTMEBOT
        ====================================================== */
     const CONFIG = {
-      WHATSAPP_NUMBER: "5522992195418", // NÚMERO ATUALIZADO SOLICITADO
+      WHATSAPP_NUMBER: "5522992195418", // NÚMERO ATUALIZADO
       TEXTMEBOT_API_KEY: "Pskn5LW4qaCv",
       DELIVERY_FEE: 6.00,
       HALF_PRICE_RULE: "HIGHER"
@@ -867,7 +867,7 @@
     /* ======================================================
        4. ESTADO DA APLICAÇÃO
        ====================================================== */
-    let cart = []; // Inicia vazio (R$ 0,00)
+    let cart = [];
     let currentOrderType = 'delivery';
     let appliedDiscount = 0; // 0 ou 0.5 (50% de desconto)
     let activeCouponName = "";
