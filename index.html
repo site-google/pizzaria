@@ -38,6 +38,24 @@
       padding-bottom: 90px;
     }
 
+    /* CLIENTE PRIMEIRA COMPRA BANNER */
+    .first-purchase-banner {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      text-align: center;
+      padding: 10px 1rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
     /* HEADER */
     header {
       background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
@@ -100,7 +118,7 @@
       padding: 8px 0 16px;
       scrollbar-width: none;
       position: sticky;
-      top: 0;
+      top: 41px;
       background: var(--bg);
       z-index: 10;
     }
@@ -553,6 +571,12 @@
 </head>
 <body>
 
+  <!-- BANNER CLIENTE PRIMEIRA COMPRA (SEMPRE NO TOPO) -->
+  <div class="first-purchase-banner">
+    <span>🎉</span>
+    <span>Cliente Primeira Compra Identificado! Aproveite os valores promocionais.</span>
+  </div>
+
   <!-- TOAST DE NOTIFICAÇÃO CUSTOMIZADO -->
   <div id="toast-notification" class="toast-notification">
     <span style="font-size: 1.2rem;">✨</span>
@@ -591,8 +615,17 @@
         <span style="font-size: 1.5rem;">🛠️</span>
         <div>
           <h2>Monte sua Pizza (Meio a Meio)</h2>
-          <p style="font-size: 0.8rem; color: #78350f;">Escolha até 2 sabores e a borda recheada</p>
+          <p style="font-size: 0.8rem; color: #78350f;">Escolha o tamanho, até 2 sabores e a borda recheada</p>
         </div>
+      </div>
+
+      <div class="form-group">
+        <label>Tamanho da Pizza (Fatias):</label>
+        <select id="builder-slices" class="form-control" onchange="updateBuilderPrice()">
+          <option value="6">6 Fatias - R$ 15,00</option>
+          <option value="8" selected>8 Fatias - R$ 20,00</option>
+          <option value="12">12 Fatias - R$ 40,00</option>
+        </select>
       </div>
 
       <div class="form-group">
@@ -611,7 +644,7 @@
       </div>
 
       <button class="btn-add btn-block" onclick="addCustomPizzaToCart()">
-        Adicionar Pizza Personalizada (<span id="custom-price-tag">R$ 0,00</span>)
+        Adicionar Pizza Personalizada (<span id="custom-price-tag">R$ 20,00</span>)
       </button>
     </div>
 
@@ -825,6 +858,12 @@
       HALF_PRICE_RULE: "HIGHER"
     };
 
+    const SLICE_PRICES = {
+      6: 15.00,
+      8: 20.00,
+      12: 40.00
+    };
+
     /* ======================================================
        2. FUNÇÃO DE ENVIO DE NOTIFICAÇÕES PARA A API TEXTMEBOT
        ====================================================== */
@@ -841,14 +880,14 @@
        3. BASE DE DADOS DO CARDÁPIO
        ====================================================== */
     const PIZZA_FLAVORS = [
-      { id: "calabresa", name: "Calabresa", price: 42.00, desc: "Molho de tomate, muçarela, calabresa fatiada e cebola fresca.", cat: "tradicional", img: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=500&q=80" },
-      { id: "mucarela", name: "Muçarela", price: 40.00, desc: "Molho de tomate, dupla camada de muçarela, rodelas de tomate e orégano.", cat: "tradicional", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&q=80" },
-      { id: "frango-catupiry", name: "Frango c/ Catupiry", price: 45.00, desc: "Frango desfiado temperado e requeijão Catupiry original.", cat: "tradicional", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80" },
-      { id: "portuguesa", name: "Portuguesa", price: 46.00, desc: "Presunto, ovos, cebola, ervilha, muçarela e azeitonas pretas.", cat: "especial", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80" },
-      { id: "4queijos", name: "Quatro Queijos", price: 48.00, desc: "Muçarela, provolone, parmesão ralado e catupiry cremoso.", cat: "especial", img: "https://images.unsplash.com/photo-1573821663912-569905455b1c?w=500&q=80" },
-      { id: "pepperoni", name: "Pepperoni", price: 49.00, desc: "Muçarela especial coberta com fatias crocantes de pepperoni.", cat: "especial", img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&q=80" },
-      { id: "chocolate-morango", name: "Chocolate c/ Morango", price: 48.00, desc: "Chocolate ao leite nobre derretido com morangos frescos fatiados.", cat: "doce", img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&q=80" },
-      { id: "romeu-julieta", name: "Romeu e Julieta", price: 44.00, desc: "Queijo muçarela Derretido com Goiabada cremosa especial.", cat: "doce", img: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=500&q=80" }
+      { id: "calabresa", name: "Calabresa", desc: "Molho de tomate, muçarela, calabresa fatiada e cebola fresca.", cat: "tradicional", img: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=500&q=80" },
+      { id: "mucarela", name: "Muçarela", desc: "Molho de tomate, dupla camada de muçarela, rodelas de tomate e orégano.", cat: "tradicional", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&q=80" },
+      { id: "frango-catupiry", name: "Frango c/ Catupiry", desc: "Frango desfiado temperado e requeijão Catupiry original.", cat: "tradicional", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80" },
+      { id: "portuguesa", name: "Portuguesa", desc: "Presunto, ovos, cebola, ervilha, muçarela e azeitonas pretas.", cat: "especial", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80" },
+      { id: "4queijos", name: "Quatro Queijos", desc: "Muçarela, provolone, parmesão ralado e catupiry cremoso.", cat: "especial", img: "https://images.unsplash.com/photo-1573821663912-569905455b1c?w=500&q=80" },
+      { id: "pepperoni", name: "Pepperoni", desc: "Muçarela especial coberta com fatias crocantes de pepperoni.", cat: "especial", img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&q=80" },
+      { id: "chocolate-morango", name: "Chocolate c/ Morango", desc: "Chocolate ao leite nobre derretido com morangos frescos fatiados.", cat: "doce", img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&q=80" },
+      { id: "romeu-julieta", name: "Romeu e Julieta", desc: "Queijo muçarela Derretido com Goiabada cremosa especial.", cat: "doce", img: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=500&q=80" }
     ];
 
     const CRUST_OPTIONS = [
@@ -888,10 +927,10 @@
       const f2Select = document.getElementById('flavor2');
       const crustSelect = document.getElementById('crust');
 
-      f1Select.innerHTML = PIZZA_FLAVORS.map(f => `<option value="${f.id}">${f.name} - ${formatMoney(f.price)}</option>`).join('');
+      f1Select.innerHTML = PIZZA_FLAVORS.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
       
       f2Select.innerHTML = `<option value="none">-- Nenhum (Pizza Inteira) --</option>` + 
-        PIZZA_FLAVORS.map(f => `<option value="${f.id}">${f.name} - ${formatMoney(f.price)}</option>`).join('');
+        PIZZA_FLAVORS.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
 
       crustSelect.innerHTML = CRUST_OPTIONS.map(c => `<option value="${c.id}">${c.name} (+ ${formatMoney(c.price)})</option>`).join('');
 
@@ -899,6 +938,9 @@
     }
 
     function calculateCustomPizza() {
+      const slices = parseInt(document.getElementById('builder-slices').value);
+      const basePrice = SLICE_PRICES[slices];
+
       const f1Id = document.getElementById('flavor1').value;
       const f2Id = document.getElementById('flavor2').value;
       const crustId = document.getElementById('crust').value;
@@ -907,24 +949,21 @@
       const flavor2 = PIZZA_FLAVORS.find(f => f.id === f2Id);
       const crust = CRUST_OPTIONS.find(c => c.id === crustId);
 
-      let basePrice = flavor1.price;
-      let name = `Pizza ${flavor1.name}`;
+      let name = `Pizza ${slices} Fatias (${flavor1.name}`;
 
-      if (flavor2 && flavor2.id !== flavor1.id) {
-        name = `Pizza 1/2 ${flavor1.name} + 1/2 ${flavor2.name}`;
-        if (CONFIG.HALF_PRICE_RULE === "HIGHER") {
-          basePrice = Math.max(flavor1.price, flavor2.price);
-        } else {
-          basePrice = (flavor1.price + flavor2.price) / 2;
-        }
+      if (flavor2 && flavor2.id !== 'none' && flavor2.id !== flavor1.id) {
+        name += ` + ${flavor2.name}`;
       }
+      name += `)`;
+
+      let totalPrice = basePrice;
 
       if (crust && crust.price > 0) {
-        name += ` (${crust.name})`;
-        basePrice += crust.price;
+        name += ` [${crust.name}]`;
+        totalPrice += crust.price;
       }
 
-      return { name, price: basePrice };
+      return { name, price: totalPrice };
     }
 
     function updateBuilderPrice() {
@@ -940,6 +979,22 @@
     /* ======================================================
        6. RENDERIZAÇÃO DO CARDÁPIO
        ====================================================== */
+    function updateCardPrice(prodId) {
+      const select = document.getElementById(`slice-${prodId}`);
+      const slices = select.value;
+      const priceTag = document.getElementById(`price-${prodId}`);
+      const price = SLICE_PRICES[slices];
+      priceTag.innerText = formatMoney(price);
+    }
+
+    function addPizzaCardToCart(prodName, prodId) {
+      const select = document.getElementById(`slice-${prodId}`);
+      const slices = select.value;
+      const price = SLICE_PRICES[slices];
+      const fullName = `${prodName} (${slices} Fatias)`;
+      addToCart(fullName, price);
+    }
+
     function renderMenu() {
       const container = document.getElementById('menu-sections');
       container.innerHTML = '';
@@ -966,6 +1021,27 @@
         `;
 
         items.forEach(prod => {
+          const isPizza = ['tradicional', 'especial', 'doce'].includes(prod.cat);
+          let priceHtml = '';
+          let actionHtml = '';
+
+          if (isPizza) {
+            priceHtml = `<span class="product-price" id="price-${prod.id}">${formatMoney(SLICE_PRICES[8])}</span>`;
+            actionHtml = `
+              <div style="display: flex; gap: 6px; align-items: center; width: 100%; margin-top: 8px;">
+                <select id="slice-${prod.id}" class="form-control" style="font-size: 0.8rem; padding: 6px;" onchange="updateCardPrice('${prod.id}')">
+                  <option value="6">6 Fatias (R$ 15,00)</option>
+                  <option value="8" selected>8 Fatias (R$ 20,00)</option>
+                  <option value="12">12 Fatias (R$ 40,00)</option>
+                </select>
+                <button class="btn-add" onclick="addPizzaCardToCart('${prod.name}', '${prod.id}')" style="white-space: nowrap;">+ Adicionar</button>
+              </div>
+            `;
+          } else {
+            priceHtml = `<span class="product-price">${formatMoney(prod.price)}</span>`;
+            actionHtml = `<button class="btn-add" onclick="addToCart('${prod.name}', ${prod.price})">+ Adicionar</button>`;
+          }
+
           html += `
             <div class="product-card">
               <img src="${prod.img}" alt="${prod.name}" class="product-img" loading="lazy">
@@ -973,9 +1049,10 @@
                 <span class="product-tag">${prod.cat}</span>
                 <h3 class="product-title">${prod.name}</h3>
                 <p class="product-desc">${prod.desc}</p>
-                <div class="product-bottom">
-                  <span class="product-price">${formatMoney(prod.price)}</span>
-                  <button class="btn-add" onclick="addToCart('${prod.name}', ${prod.price})">+ Adicionar</button>
+                <div class="product-bottom" style="${isPizza ? 'flex-direction: column; align-items: flex-start;' : ''}">
+                  ${!isPizza ? priceHtml : ''}
+                  ${isPizza ? `<div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 4px;"><span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Tamanho:</span> ${priceHtml}</div>` : ''}
+                  ${actionHtml}
                 </div>
               </div>
             </div>
@@ -1195,7 +1272,7 @@
       const deliveryFee = currentOrderType === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
       const total = subtotalWithDiscount + deliveryFee;
 
-      let msg = `🍕 NOVO PEDIDO - PIZZARIA FORNO E MASSA\n`;
+      let msg = `🍕 NOVO PEDIDO - PIZZARIA FORNO E MASSA (Cliente Primeira Compra)\n`;
       msg += `------------------------------------\n`;
       msg += `👤 Cliente: ${name}\n`;
       msg += `📱 Telefone: ${phone}\n\n`;
