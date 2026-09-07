@@ -622,8 +622,8 @@
       <div class="form-group">
         <label>Tamanho da Pizza (Fatias):</label>
         <select id="builder-slices" class="form-control" onchange="updateBuilderPrice()">
-          <option value="6">6 Fatias - R$ 15,00</option>
-          <option value="8" selected>8 Fatias - R$ 20,00</option>
+          <option value="6" selected>6 Fatias - R$ 15,00</option>
+          <option value="8">8 Fatias - R$ 20,00</option>
           <option value="12">12 Fatias - R$ 40,00</option>
         </select>
       </div>
@@ -644,7 +644,7 @@
       </div>
 
       <button class="btn-add btn-block" onclick="addCustomPizzaToCart()">
-        Adicionar Pizza Personalizada (<span id="custom-price-tag">R$ 20,00</span>)
+        Adicionar Pizza Personalizada (<span id="custom-price-tag">R$ 15,00</span>)
       </button>
     </div>
 
@@ -1026,12 +1026,12 @@
           let actionHtml = '';
 
           if (isPizza) {
-            priceHtml = `<span class="product-price" id="price-${prod.id}">${formatMoney(SLICE_PRICES[8])}</span>`;
+            priceHtml = `<span class="product-price" id="price-${prod.id}">${formatMoney(SLICE_PRICES[6])}</span>`;
             actionHtml = `
               <div style="display: flex; gap: 6px; align-items: center; width: 100%; margin-top: 8px;">
                 <select id="slice-${prod.id}" class="form-control" style="font-size: 0.8rem; padding: 6px;" onchange="updateCardPrice('${prod.id}')">
-                  <option value="6">6 Fatias (R$ 15,00)</option>
-                  <option value="8" selected>8 Fatias (R$ 20,00)</option>
+                  <option value="6" selected>6 Fatias (R$ 15,00)</option>
+                  <option value="8">8 Fatias (R$ 20,00)</option>
                   <option value="12">12 Fatias (R$ 40,00)</option>
                 </select>
                 <button class="btn-add" onclick="addPizzaCardToCart('${prod.name}', '${prod.id}')" style="white-space: nowrap;">+ Adicionar</button>
