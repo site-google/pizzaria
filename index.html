@@ -852,7 +852,7 @@
        1. CONFIGURAÇÕES DA PIZZARIA & API TEXTMEBOT
        ====================================================== */
     const CONFIG = {
-      WHATSAPP_NUMBER: "5522992195418", // NÚMERO ATUALIZADO
+      WHATSAPP_NUMBER: "5522992195418", 
       TEXTMEBOT_API_KEY: "Pskn5LW4qaCv",
       DELIVERY_FEE: 6.00,
       HALF_PRICE_RULE: "HIGHER"
@@ -908,7 +908,7 @@
        ====================================================== */
     let cart = [];
     let currentOrderType = 'delivery';
-    let appliedDiscount = 0; // 0 ou 0.5 (50% de desconto)
+    let appliedDiscount = 0; 
     let activeCouponName = "";
 
     const formatMoney = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -1065,7 +1065,7 @@
     }
 
     /* ======================================================
-       7. LÓGICA DO CARRINHO E CUPOM
+       7. LÓGICA DO CARRINHO E CUPOM (COM NOTIFICAÇÃO WHATSAPP)
        ====================================================== */
     function addToCart(name, price) {
       const existing = cart.find(item => item.name === name);
@@ -1076,6 +1076,10 @@
       }
       updateCartUI();
       showToast(`${name} adicionado ao carrinho!`);
+
+      // 🔔 AVISO ENVIADO VIA WHATSAPP QUANDO UM PRODUTO É ADICIONADO
+      const notificationMsg = `🛒 *Novo item adicionado ao carrinho!*\n- Produto: ${name}\n- Preço: ${formatMoney(price)}`;
+      sendWhatsAppApiNotification(notificationMsg);
     }
 
     function updateQty(index, delta) {
