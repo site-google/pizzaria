@@ -651,6 +651,11 @@
     <!-- PRODUTOS DO CARDÁPIO -->
     <div id="menu-sections"></div>
 
+    <!-- RODAPÉ DE LOCALIZAÇÃO DO VISITANTE -->
+    <div id="location-footer-container" style="text-align: center; padding: 2rem 0 1rem; font-size: 0.95rem; font-weight: 700; color: var(--primary);">
+      <span id="location-footer-msg"></span>
+    </div>
+
   </div>
 
   <!-- BARRA INFERIOR DE CARRINHO -->
@@ -920,7 +925,37 @@
       populateBuilderSelects();
       renderMenu();
       updateCartUI();
+      initVisitorLocation(); // Captura a localização do visitante e exibe no rodapé
     });
+
+    /* ======================================================
+       NOVO: GEOLOCALIZAÇÃO E MENSAGEM NO RODAPÉ
+       ====================================================== */
+    function initVisitorLocation() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`, {
+              headers: { 'Accept-Language': 'pt-BR' }
+            });
+            const data = await response.json();
+            const city = data.address?.city || data.address?.town || data.address?.municipality || data.address?.village || data.address?.county;
+            if (city) {
+              const footerMsg = document.getElementById('location-footer-msg');
+              if (footerMsg) {
+                footerMsg.innerText = `Melhor pizzaria de ${city}`;
+              }
+            }
+          } catch (err) {
+            console.error("Erro ao obter geolocalização reversa:", err);
+          }
+        }, (error) => {
+          console.warn("Geolocalização não permitida ou indisponível:", error.message);
+        }, { timeout: 10000 });
+      }
+    }
 
     function populateBuilderSelects() {
       const f1Select = document.getElementById('flavor1');
